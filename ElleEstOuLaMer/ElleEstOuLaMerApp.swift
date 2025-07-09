@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ElleEstOuLaMerApp: App {
+    @State private var beachSearchViewModel = BeachSearchViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            MainMapView()
+            BeachSearchView()
+                .environment(beachSearchViewModel)
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  MainMapView.swift
+//  BeachSearchView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 07/07/2025.
@@ -8,7 +8,9 @@
 import SwiftUI
 import MapKit
 
-struct MainMapView: View {
+struct BeachSearchView: View {
+    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    
     @State private var mapPosition = MapCameraPosition.region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 48.866667, longitude: 2.333333),
@@ -56,5 +58,5 @@ struct MainMapView: View {
 }
 
 #Preview {
-    MainMapView()
+    BeachSearchView()
 }
