@@ -1,0 +1,39 @@
+{
+  "sourceLanguage" : "fr",
+  "strings" : {
+    "Autorise l’accès à ta position dans les Réglages pour que l’app t’indique la plage la plus proche." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow location access in Settings so the app can show you the nearest beach."
+          }
+        }
+      }
+    },
+    "Elle est où la mer ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Where is the sea?"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "shouldTranslate" : false
+    },
+    "Tu veux trouver la mer ?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to find the sea?"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}
