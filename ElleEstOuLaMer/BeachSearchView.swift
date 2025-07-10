@@ -49,7 +49,7 @@ struct BeachSearchView: View {
         }
         .mapStyle(.standard(elevation: .flat, emphasis: .automatic, pointsOfInterest: .excludingAll))
         .onAppear {
-            beachSearchViewModel.requestLocationAuthorizationIfNeeded()
+            beachSearchViewModel.startLocationTracking()
         }
         .onChange(of: beachSearchViewModel.nearestBeachFromUser) {
             updateMapPosition()
@@ -67,7 +67,7 @@ struct BeachSearchView: View {
     private func updateMapPosition() {
         if let nearestBeachFromUser = beachSearchViewModel.nearestBeachFromUser {
             withAnimation {
-                mapPosition = .region(MKCoordinateRegion(center: nearestBeachFromUser.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+                mapPosition = .region(MKCoordinateRegion(center: nearestBeachFromUser.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)))
             }
         } else {
             withAnimation {

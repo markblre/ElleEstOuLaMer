@@ -24,23 +24,39 @@ class BeachSearchViewModel: NSObject {
         }
     }()
     
+    private var hasLocationAuthorization: Bool {
+        locationManager.authorizationStatus == .authorizedWhenInUse
+    }
+    
     // MARK: - Public
     public var nearestBeachFromUser: Beach?
     
     public var showLocationDeniedAlert: Bool = false
     
-    public func requestLocationAuthorizationIfNeeded() {
-        if locationManager.authorizationStatus == .notDetermined {
+    public func startLocationTracking() {
+        if !hasLocationAuthorization {
             locationManager.requestWhenInUseAuthorization()
         }
+        
+        locationManager.startUpdatingLocation()
     }
     
     public func searchNearestBeachFromUserLocation() {
-        guard locationManager.authorizationStatus == .authorizedWhenInUse else {
+        guard hasLocationAuthorization else {
             showLocationDeniedAlert = true
             return
         }
         
-        nearestBeachFromUser = allBeaches[1000]
+        guard let userLocation = locationManager.location else {
+            showLocationDeniedAlert = true
+            return
+        }
+        
+        nearestBeachFromUser = allBeaches.min(by: { beachA, beachB in
+            let locationA = CLLocation(latitude: beachA.latitude, longitude: beachA.longitude)
+            let locationB = CLLocation(latitude: beachB.latitude, longitude: beachB.longitude)
+            
+            return userLocation.distance(from: locationA) < userLocation.distance(from: locationB)
+        })
     }
 }
