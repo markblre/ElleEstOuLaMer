@@ -79,4 +79,5 @@ struct BeachSearchView: View {
 
 #Preview {
     BeachSearchView()
+        .environment(BeachSearchViewModel())
 }
