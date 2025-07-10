@@ -7,8 +7,13 @@
 
 import Foundation
 import MapKit
+import SwiftUI
 
-@Observable class BeachSearchViewModel {
+@Observable
+class BeachSearchViewModel: NSObject {
+    // MARK: - Properties
+    private let locationManager = CLLocationManager()
+    
     private let allBeaches: [Beach] = {
         if let url = Bundle.main.url(forResource: "beaches-france-2024", withExtension: "json"),
            let data = try? Data(contentsOf: url),
@@ -18,4 +23,24 @@ import MapKit
             return []
         }
     }()
+    
+    // MARK: - Public
+    public var nearestBeachFromUser: Beach?
+    
+    public var showLocationDeniedAlert: Bool = false
+    
+    public func requestLocationAuthorizationIfNeeded() {
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+    }
+    
+    public func searchNearestBeachFromUserLocation() {
+        guard locationManager.authorizationStatus == .authorizedWhenInUse else {
+            showLocationDeniedAlert = true
+            return
+        }
+        
+        nearestBeachFromUser = allBeaches[1000]
+    }
 }

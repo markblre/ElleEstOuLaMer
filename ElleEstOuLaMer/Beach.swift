@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import CoreLocation
 
-struct Beach: Identifiable, Decodable {
+struct Beach: Identifiable, Decodable, Equatable {
     let id: String
     let name: String
     let region: String
@@ -16,4 +17,8 @@ struct Beach: Identifiable, Decodable {
     let communeName: String
     let latitude: Double
     let longitude: Double
+    
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
 }

@@ -11,33 +11,28 @@ import MapKit
 struct BeachSearchView: View {
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
-    @State private var mapPosition = MapCameraPosition.region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 48.866667, longitude: 2.333333),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
-    )
-    
-    private var beachLocationCoordinate = CLLocationCoordinate2D(latitude: 43.29501680833, longitude: 3.53255123962)
+    @State private var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     
     var body: some View {
-        ZStack {
+        @Bindable var beachSearchViewModel = beachSearchViewModel
+        
+        ZStack(alignment: .bottom) {
             map
-            VStack {
-                Spacer()
+            if beachSearchViewModel.nearestBeachFromUser == nil {
                 mainButton
+                    .padding(.bottom, 50)
             }
+        }
+        .alert("Tu veux trouver la mer ?", isPresented: $beachSearchViewModel.showLocationDeniedAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Autorise l’accès à ta position dans les Réglages pour que l’app t’indique la plage la plus proche.")
         }
     }
     
     var mainButton: some View {
         Button(action: {
-            mapPosition = MapCameraPosition.region(
-                MKCoordinateRegion(
-                    center: beachLocationCoordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                )
-            )
+            beachSearchViewModel.searchNearestBeachFromUserLocation()
         }) {
             Text("Elle est où la mer ?")
                 .font(.title)
@@ -45,15 +40,40 @@ struct BeachSearchView: View {
                 .padding()
         }
         .buttonStyle(.borderedProminent)
-        .padding(.bottom, 50)
     }
     
     var map: some View {
         Map(position: $mapPosition) {
-            Marker("", systemImage: "beach.umbrella.fill", coordinate: beachLocationCoordinate)
-            .tint(.cyan)
+            UserAnnotation()
+            nearestBeachMarker
         }
         .mapStyle(.standard(elevation: .flat, emphasis: .automatic, pointsOfInterest: .excludingAll))
+        .onAppear {
+            beachSearchViewModel.requestLocationAuthorizationIfNeeded()
+        }
+        .onChange(of: beachSearchViewModel.nearestBeachFromUser) {
+            updateMapPosition()
+        }
+    }
+    
+    @MapContentBuilder
+    var nearestBeachMarker: some MapContent {
+        if let nearestBeachFromUser = beachSearchViewModel.nearestBeachFromUser {
+            Marker(nearestBeachFromUser.name, systemImage: "beach.umbrella.fill", coordinate: nearestBeachFromUser.coordinate)
+                .tint(.cyan)
+        }
+    }
+    
+    private func updateMapPosition() {
+        if let nearestBeachFromUser = beachSearchViewModel.nearestBeachFromUser {
+            withAnimation {
+                mapPosition = .region(MKCoordinateRegion(center: nearestBeachFromUser.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+            }
+        } else {
+            withAnimation {
+                mapPosition = .userLocation(fallback: .automatic)
+            }
+        }
     }
 }
 
