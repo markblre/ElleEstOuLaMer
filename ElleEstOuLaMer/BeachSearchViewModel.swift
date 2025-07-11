@@ -28,10 +28,25 @@ class BeachSearchViewModel: NSObject {
         locationManager.authorizationStatus == .authorizedWhenInUse
     }
     
+    private func createMapItem(for beach: Beach) -> MKMapItem {
+        let mapItem: MKMapItem
+        if #available(iOS 26.0, *) {
+            mapItem = MKMapItem(location: CLLocation(latitude: beach.latitude, longitude: beach.longitude), address: nil)
+        } else {
+            mapItem = MKMapItem(placemark: MKPlacemark(coordinate: beach.coordinate))
+        }
+        
+        mapItem.name = beach.name
+        mapItem.pointOfInterestCategory = .beach
+        return mapItem
+    }
+    
     // MARK: - Public
-    public var nearestBeachFromUser: Beach?
+    public var nearestBeach: Beach?
     
     public var showLocationDeniedAlert: Bool = false
+    
+    public var showBeachDetailsSheet: Bool = false
     
     public func startLocationTracking() {
         if !hasLocationAuthorization {
@@ -52,11 +67,41 @@ class BeachSearchViewModel: NSObject {
             return
         }
         
-        nearestBeachFromUser = allBeaches.min(by: { beachA, beachB in
+        nearestBeach = allBeaches.min(by: { beachA, beachB in
             let locationA = CLLocation(latitude: beachA.latitude, longitude: beachA.longitude)
             let locationB = CLLocation(latitude: beachB.latitude, longitude: beachB.longitude)
             
-            return userLocation.distance(from: locationA) < userLocation.distance(from: locationB)
+            let distanceA = userLocation.distance(from: locationA)
+            let distanceB = userLocation.distance(from: locationB)
+            
+            return distanceA < distanceB
         })
+        showBeachDetailsSheet = true
+    }
+    
+    public func openInAppleMaps() {
+        guard let nearestBeach else {
+            return
+        }
+        
+        let mapItem = self.createMapItem(for: nearestBeach)
+        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault])
+    }
+    
+    public func openInGoogleMaps() {
+        guard let nearestBeach else {
+            return
+        }
+        
+        let urlScheme = "comgooglemaps://?daddr=\(nearestBeach.latitude),\(nearestBeach.longitude)"
+
+        if let url = URL(string: urlScheme), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        } else {
+            let webUrlString = "https://www.google.com/maps/dir/?api=1&destination=\(nearestBeach.latitude),\(nearestBeach.longitude)"
+            if let webUrl = URL(string: webUrlString) {
+                UIApplication.shared.open(webUrl)
+            }
+        }
     }
 }

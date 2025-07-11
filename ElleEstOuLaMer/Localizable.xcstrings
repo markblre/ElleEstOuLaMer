@@ -24,6 +24,28 @@
     "OK" : {
       "shouldTranslate" : false
     },
+    "Ouvrir dans Google Maps" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Google Maps"
+          }
+        }
+      }
+    },
+    "Ouvrir dans Plans" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Apple Maps"
+          }
+        }
+      }
+    },
     "Tu veux trouver la mer ?" : {
       "localizations" : {
         "en" : {

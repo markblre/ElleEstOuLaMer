@@ -18,7 +18,7 @@ struct BeachSearchView: View {
         
         ZStack(alignment: .bottom) {
             map
-            if beachSearchViewModel.nearestBeachFromUser == nil {
+            if beachSearchViewModel.nearestBeach == nil {
                 mainButton
                     .padding(.bottom, 50)
             }
@@ -27,6 +27,12 @@ struct BeachSearchView: View {
             Button("OK", role: .cancel) { }
         } message: {
             Text("Autorise l’accès à ta position dans les Réglages pour que l’app t’indique la plage la plus proche.")
+        }
+        .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
+            BeachDetailsView()
+                .presentationDetents([.height(75), .medium])
+                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                .interactiveDismissDisabled(true)
         }
     }
     
@@ -51,21 +57,21 @@ struct BeachSearchView: View {
         .onAppear {
             beachSearchViewModel.startLocationTracking()
         }
-        .onChange(of: beachSearchViewModel.nearestBeachFromUser) {
+        .onChange(of: beachSearchViewModel.nearestBeach) {
             updateMapPosition()
         }
     }
     
     @MapContentBuilder
     var nearestBeachMarker: some MapContent {
-        if let nearestBeachFromUser = beachSearchViewModel.nearestBeachFromUser {
+        if let nearestBeachFromUser = beachSearchViewModel.nearestBeach {
             Marker(nearestBeachFromUser.name, systemImage: "beach.umbrella.fill", coordinate: nearestBeachFromUser.coordinate)
                 .tint(.cyan)
         }
     }
     
     private func updateMapPosition() {
-        if let nearestBeachFromUser = beachSearchViewModel.nearestBeachFromUser {
+        if let nearestBeachFromUser = beachSearchViewModel.nearestBeach {
             withAnimation {
                 mapPosition = .region(MKCoordinateRegion(center: nearestBeachFromUser.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)))
             }
