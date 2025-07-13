@@ -46,6 +46,8 @@ class BeachSearchViewModel: NSObject {
     
     public var showLocationDeniedAlert: Bool = false
     
+    public var showWaitingForLocationAlert: Bool = false
+    
     public var showBeachDetailsSheet: Bool = false
     
     public func startLocationTracking() {
@@ -57,9 +59,13 @@ class BeachSearchViewModel: NSObject {
     }
     
     public func searchNearestBeachFromUserLocation() {
-        guard hasLocationAuthorization,
-            let userLocation = locationManager.location else {
+        guard hasLocationAuthorization else {
             showLocationDeniedAlert = true
+            return
+        }
+        
+        guard let userLocation = locationManager.location else {
+            showWaitingForLocationAlert = true
             return
         }
         

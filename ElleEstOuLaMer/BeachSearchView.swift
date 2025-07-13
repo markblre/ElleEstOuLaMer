@@ -23,11 +23,12 @@ struct BeachSearchView: View {
                     .padding(.bottom, 50)
             }
         }
-        .alert("Tu veux trouver la mer ?", isPresented: $beachSearchViewModel.showLocationDeniedAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("Autorise l’accès à ta position dans les Réglages pour que l’app t’indique la plage la plus proche.")
-        }
+        .simpleAlert(isPresented: $beachSearchViewModel.showLocationDeniedAlert,
+                     title: "Tu veux trouver la mer ?",
+                     message: "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche.")
+        .simpleAlert(isPresented: $beachSearchViewModel.showWaitingForLocationAlert,
+                     title: "Position indisponible",
+                     message: "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes.")
         .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
             BeachDetailsView()
                 .presentationDetents([.height(75), .medium])

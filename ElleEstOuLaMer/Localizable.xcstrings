@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "fr",
   "strings" : {
-    "Autorise l’accès à ta position dans les Réglages pour que l’app t’indique la plage la plus proche." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allow location access in Settings so the app can show you the nearest beach."
-          }
-        }
-      }
-    },
     "Elle est où la mer ?" : {
       "localizations" : {
         "en" : {
@@ -21,11 +11,30 @@
         }
       }
     },
+    "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location access is disabled. Enable location services in Settings so the app can show you the nearest beach."
+          }
+        }
+      }
+    },
+    "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We haven’t been able to get your location yet. Please try again in a few seconds."
+          }
+        }
+      }
+    },
     "OK" : {
       "shouldTranslate" : false
     },
     "Ouvrir dans Google Maps" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36,12 +45,21 @@
       }
     },
     "Ouvrir dans Plans" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in Apple Maps"
+          }
+        }
+      }
+    },
+    "Position indisponible" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location unavailable"
           }
         }
       }
