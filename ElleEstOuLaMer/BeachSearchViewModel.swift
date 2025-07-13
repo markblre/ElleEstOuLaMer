@@ -57,12 +57,8 @@ class BeachSearchViewModel: NSObject {
     }
     
     public func searchNearestBeachFromUserLocation() {
-        guard hasLocationAuthorization else {
-            showLocationDeniedAlert = true
-            return
-        }
-        
-        guard let userLocation = locationManager.location else {
+        guard hasLocationAuthorization,
+            let userLocation = locationManager.location else {
             showLocationDeniedAlert = true
             return
         }

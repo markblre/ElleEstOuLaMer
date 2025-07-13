@@ -58,26 +58,33 @@ struct BeachSearchView: View {
             beachSearchViewModel.startLocationTracking()
         }
         .onChange(of: beachSearchViewModel.nearestBeach) {
-            updateMapPosition()
+            updateMapPositionWithAnimation()
         }
     }
     
     @MapContentBuilder
     var nearestBeachMarker: some MapContent {
-        if let nearestBeachFromUser = beachSearchViewModel.nearestBeach {
-            Marker(nearestBeachFromUser.name, systemImage: "beach.umbrella.fill", coordinate: nearestBeachFromUser.coordinate)
+        if let nearestBeach = beachSearchViewModel.nearestBeach {
+            Marker(nearestBeach.name, systemImage: "beach.umbrella.fill", coordinate: nearestBeach.coordinate)
                 .tint(.cyan)
         }
     }
+}
     
-    private func updateMapPosition() {
-        if let nearestBeachFromUser = beachSearchViewModel.nearestBeach {
+private extension BeachSearchView {
+    func updateMapPositionWithAnimation() {
+        guard let nearestBeach = beachSearchViewModel.nearestBeach else {
+            mapPosition = .userLocation(fallback: .automatic)
+            return
+        }
+        
+        withAnimation {
+            mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: 4_000_000, heading: 0, pitch: 0))
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             withAnimation {
-                mapPosition = .region(MKCoordinateRegion(center: nearestBeachFromUser.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)))
-            }
-        } else {
-            withAnimation {
-                mapPosition = .userLocation(fallback: .automatic)
+                mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: 10_000, heading: 0, pitch: 0))
             }
         }
     }
