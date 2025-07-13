@@ -10,9 +10,22 @@
 		4DB231FF2E1BD80800DFD22D /* ElleEstOuLaMer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElleEstOuLaMer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4D82A7152E24653500DE1506 /* Exceptions for "ElleEstOuLaMer" folder in "ElleEstOuLaMer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4DB231FE2E1BD80800DFD22D /* ElleEstOuLaMer */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4DB232012E1BD80800DFD22D /* ElleEstOuLaMer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				4D82A7152E24653500DE1506 /* Exceptions for "ElleEstOuLaMer" folder in "ElleEstOuLaMer" target */,
+			);
 			path = ElleEstOuLaMer;
 			sourceTree = "<group>";
 		};
@@ -257,7 +270,9 @@
 				DEVELOPMENT_TEAM = 7HMYDZDHX9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ElleEstOuLaMer/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Elle est où la mer ?";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Votre position est utilisée pour trouver la plage la plus proche de vous.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -296,7 +311,9 @@
 				DEVELOPMENT_TEAM = 7HMYDZDHX9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ElleEstOuLaMer/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Elle est où la mer ?";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Votre position est utilisée pour trouver la plage la plus proche de vous.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
