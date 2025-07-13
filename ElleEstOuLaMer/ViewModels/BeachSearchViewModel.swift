@@ -42,7 +42,11 @@ class BeachSearchViewModel: NSObject {
     }
     
     // MARK: - Public
-    public var nearestBeach: Beach?
+    public var nearestBeach: Beach? {
+        didSet {
+            showBeachDetailsSheet = nearestBeach != nil
+        }
+    }
     
     public var showLocationDeniedAlert: Bool = false
     
@@ -78,7 +82,6 @@ class BeachSearchViewModel: NSObject {
             
             return distanceA < distanceB
         })
-        showBeachDetailsSheet = true
     }
     
     public func openInAppleMaps() {

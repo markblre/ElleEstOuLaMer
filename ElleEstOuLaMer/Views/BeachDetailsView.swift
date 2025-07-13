@@ -11,14 +11,20 @@ import MapKit
 struct BeachDetailsView: View {
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
+    let beach: Beach
+    
+    init(for beach: Beach) {
+        self.beach = beach
+    }
+    
     var body: some View {
         ScrollView(.vertical) {
             header
             VStack {
-                MapOpenButton(title: "Ouvrir dans Plans") {
+                MapOpenButton(title: "openInAppleMaps") {
                     beachSearchViewModel.openInAppleMaps()
                 }
-                MapOpenButton(title: "Ouvrir dans Google Maps") {
+                MapOpenButton(title: "openInGoogleMaps") {
                     beachSearchViewModel.openInGoogleMaps()
                 }
             }
@@ -27,18 +33,23 @@ struct BeachDetailsView: View {
         .padding()
     }
     
+    @ViewBuilder
     var header: some View {
         VStack {
-            Text(beachSearchViewModel.nearestBeach?.name ?? "")
+            Text(beach.name)
                 .font(.title2)
                 .fontWeight(.bold)
-            Text(beachSearchViewModel.nearestBeach?.communeName ?? "")
+            Text(beach.communeName)
                 .font(.caption)
         }
     }
 }
 
 struct MapOpenButton: View {
+    private struct Constants {
+        static let mapOpenButtonHeight: CGFloat = 50
+    }
+    
     let title: LocalizedStringKey
     let action: () -> Void
 
@@ -46,7 +57,7 @@ struct MapOpenButton: View {
         Button(action: action) {
             Text(title)
                 .font(.title2)
-                .frame(maxWidth: .infinity, minHeight: 50)
+                .frame(maxWidth: .infinity, minHeight: Constants.mapOpenButtonHeight)
         }
         .buttonStyle(.borderedProminent)
     }

@@ -1,32 +1,82 @@
 {
   "sourceLanguage" : "fr",
   "strings" : {
-    "Elle est où la mer ?" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Where is the sea?"
-          }
-        }
-      }
-    },
-    "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche." : {
+    "locationDeniedMessage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Location access is disabled. Enable location services in Settings so the app can show you the nearest beach."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche."
+          }
         }
       }
     },
-    "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes." : {
+    "locationDeniedTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You want to find the sea?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu veux trouver la mer ?"
+          }
+        }
+      }
+    },
+    "locationUnavailableMessage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "We haven’t been able to get your location yet. Please try again in a few seconds."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes."
+          }
+        }
+      }
+    },
+    "locationUnavailableTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location unavailable"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position indisponible"
+          }
+        }
+      }
+    },
+    "mainButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Where is the sea?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elle est où la mer ?"
           }
         }
       }
@@ -34,42 +84,34 @@
     "OK" : {
       "shouldTranslate" : false
     },
-    "Ouvrir dans Google Maps" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open in Google Maps"
-          }
-        }
-      }
-    },
-    "Ouvrir dans Plans" : {
+    "openInAppleMaps" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open in Apple Maps"
           }
-        }
-      }
-    },
-    "Position indisponible" : {
-      "localizations" : {
-        "en" : {
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location unavailable"
+            "value" : "Ouvrir dans Plans"
           }
         }
       }
     },
-    "Tu veux trouver la mer ?" : {
+    "openInGoogleMaps" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you want to find the sea?"
+            "value" : "Open in Google Maps"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans Google Maps"
           }
         }
       }

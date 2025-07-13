@@ -9,6 +9,15 @@ import SwiftUI
 import MapKit
 
 struct BeachSearchView: View {
+    
+    private struct Constants {
+        static let bottomPaddingMainButton: CGFloat = 50
+        static let beachDetailsSheetReducedHeight: CGFloat = 75
+        static let franceViewDistance: CLLocationDistance = 4_000_000
+        static let beachViewDistance: CLLocationDistance = 10_000
+        static let zoomDelaySeconds: TimeInterval = 2.0
+    }
+    
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
     @State private var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
@@ -20,20 +29,22 @@ struct BeachSearchView: View {
             map
             if beachSearchViewModel.nearestBeach == nil {
                 mainButton
-                    .padding(.bottom, 50)
+                    .padding(.bottom, Constants.bottomPaddingMainButton)
             }
         }
         .simpleAlert(isPresented: $beachSearchViewModel.showLocationDeniedAlert,
-                     title: "Tu veux trouver la mer ?",
-                     message: "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche.")
+                     title: "locationDeniedTitle",
+                     message: "locationDeniedMessage")
         .simpleAlert(isPresented: $beachSearchViewModel.showWaitingForLocationAlert,
-                     title: "Position indisponible",
-                     message: "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes.")
+                     title: "locationUnavailableTitle",
+                     message: "locationUnavailableMessage")
         .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
-            BeachDetailsView()
-                .presentationDetents([.height(75), .medium])
-                .presentationBackgroundInteraction(.enabled(upThrough: .medium))
-                .interactiveDismissDisabled(true)
+            if let nearestBeach = beachSearchViewModel.nearestBeach {
+                BeachDetailsView(for: nearestBeach)
+                    .presentationDetents([.height(Constants.beachDetailsSheetReducedHeight), .medium])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .interactiveDismissDisabled(true)
+            }
         }
     }
     
@@ -41,7 +52,7 @@ struct BeachSearchView: View {
         Button(action: {
             beachSearchViewModel.searchNearestBeachFromUserLocation()
         }) {
-            Text("Elle est où la mer ?")
+            Text("mainButtonTitle")
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
@@ -80,12 +91,12 @@ private extension BeachSearchView {
         }
         
         withAnimation {
-            mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: 4_000_000, heading: 0, pitch: 0))
+            mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: Constants.franceViewDistance, heading: 0, pitch: 0))
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.zoomDelaySeconds) {
             withAnimation {
-                mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: 10_000, heading: 0, pitch: 0))
+                mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: Constants.beachViewDistance, heading: 0, pitch: 0))
             }
         }
     }
