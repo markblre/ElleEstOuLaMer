@@ -12,9 +12,10 @@ struct BeachSearchView: View {
     
     private struct Constants {
         static let bottomPaddingMainButton: CGFloat = 50
-        static let beachDetailsSheetReducedHeight: CGFloat = 75
+        static let detailsSheetReducedHeight: CGFloat = 75
         static let franceViewDistance: CLLocationDistance = 4_000_000
         static let beachViewDistance: CLLocationDistance = 10_000
+        static let animationTriggerDistance: CLLocationDistance = 100_000
         static let zoomDelaySeconds: TimeInterval = 2.0
     }
     
@@ -22,12 +23,14 @@ struct BeachSearchView: View {
     
     @State private var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     
+    @State private var detailsSheetDetentSelection: PresentationDetent = .height(Constants.detailsSheetReducedHeight)
+    
     var body: some View {
         @Bindable var beachSearchViewModel = beachSearchViewModel
         
         ZStack(alignment: .bottom) {
             map
-            if beachSearchViewModel.nearestBeach == nil {
+            if beachSearchViewModel.showMainButton {
                 mainButton
                     .padding(.bottom, Constants.bottomPaddingMainButton)
             }
@@ -39,9 +42,11 @@ struct BeachSearchView: View {
                      title: "locationUnavailableTitle",
                      message: "locationUnavailableMessage")
         .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
-            if let nearestBeach = beachSearchViewModel.nearestBeach {
-                BeachDetailsView(for: nearestBeach)
-                    .presentationDetents([.height(Constants.beachDetailsSheetReducedHeight), .medium])
+            if let currentBeachResult = beachSearchViewModel.currentBeachResult {
+                BeachResultDetailsView(for: currentBeachResult, collapseSheet: {
+                    detailsSheetDetentSelection = .height(Constants.detailsSheetReducedHeight)
+                })
+                    .presentationDetents([.height(Constants.detailsSheetReducedHeight), .medium], selection: $detailsSheetDetentSelection)
                     .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                     .interactiveDismissDisabled(true)
             }
@@ -50,7 +55,7 @@ struct BeachSearchView: View {
     
     var mainButton: some View {
         Button(action: {
-            beachSearchViewModel.searchNearestBeachFromUserLocation()
+            beachSearchViewModel.findNearestBeaches()
         }) {
             Text("mainButtonTitle")
                 .font(.title)
@@ -63,21 +68,21 @@ struct BeachSearchView: View {
     var map: some View {
         Map(position: $mapPosition) {
             UserAnnotation()
-            nearestBeachMarker
+            currentBeachMarker
         }
         .mapStyle(.standard(elevation: .flat, emphasis: .automatic, pointsOfInterest: .excludingAll))
         .onAppear {
             beachSearchViewModel.startLocationTracking()
         }
-        .onChange(of: beachSearchViewModel.nearestBeach) {
+        .onChange(of: beachSearchViewModel.currentBeachIndex) {
             updateMapPositionWithAnimation()
         }
     }
     
     @MapContentBuilder
-    var nearestBeachMarker: some MapContent {
-        if let nearestBeach = beachSearchViewModel.nearestBeach {
-            Marker(nearestBeach.name, systemImage: "beach.umbrella.fill", coordinate: nearestBeach.coordinate)
+    var currentBeachMarker: some MapContent {
+        if let currentBeach = beachSearchViewModel.currentBeachResult?.beach {
+            Marker(currentBeach.name, systemImage: "beach.umbrella.fill", coordinate: currentBeach.coordinate)
                 .tint(.cyan)
         }
     }
@@ -85,18 +90,29 @@ struct BeachSearchView: View {
     
 private extension BeachSearchView {
     func updateMapPositionWithAnimation() {
-        guard let nearestBeach = beachSearchViewModel.nearestBeach else {
+        guard let currentBeach = beachSearchViewModel.currentBeachResult?.beach else {
             mapPosition = .userLocation(fallback: .automatic)
             return
         }
         
-        withAnimation {
-            mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: Constants.franceViewDistance, heading: 0, pitch: 0))
+        let target = MapCamera(centerCoordinate: currentBeach.coordinate, distance: Constants.beachViewDistance, heading: 0, pitch: 0)
+        
+        guard let distanceFromLastSelection = beachSearchViewModel.distanceFromLastSelection,
+              distanceFromLastSelection >= Constants.animationTriggerDistance,
+              let midpointFromLastSelection = beachSearchViewModel.midpointFromLastSelection else {
+            withAnimation {
+                mapPosition = .camera(target)
+            }
+            return
+        }
+        
+        withAnimation() {
+            mapPosition = .camera(MapCamera(centerCoordinate: midpointFromLastSelection, distance: Constants.franceViewDistance, heading: 0, pitch: 0))
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.zoomDelaySeconds) {
             withAnimation {
-                mapPosition = .camera(MapCamera(centerCoordinate: nearestBeach.coordinate, distance: Constants.beachViewDistance, heading: 0, pitch: 0))
+                mapPosition = .camera(target)
             }
         }
     }

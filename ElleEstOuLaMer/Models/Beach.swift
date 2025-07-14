@@ -21,4 +21,8 @@ struct Beach: Identifiable, Decodable, Equatable {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
+    
+    var location: CLLocation {
+        CLLocation(latitude: latitude, longitude: longitude)
+    }
 }

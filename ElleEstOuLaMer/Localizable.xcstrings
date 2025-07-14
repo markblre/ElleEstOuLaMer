@@ -81,6 +81,22 @@
         }
       }
     },
+    "nextBeachButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show me another beach"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montre moi une autre plage"
+          }
+        }
+      }
+    },
     "OK" : {
       "shouldTranslate" : false
     },
