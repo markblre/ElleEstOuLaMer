@@ -53,16 +53,29 @@ struct BeachSearchView: View {
         }
     }
     
+    @ViewBuilder
     var mainButton: some View {
-        Button(action: {
-            beachSearchViewModel.findNearestBeaches()
-        }) {
-            Text("mainButtonTitle")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
+        if #available(iOS 26, *) {
+            Button(action: {
+                beachSearchViewModel.findNearestBeaches()
+            }) {
+                Text("mainButtonTitle")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding()
+            }
+            .buttonStyle(.glassProminent)
+        } else {
+           Button(action: {
+               beachSearchViewModel.findNearestBeaches()
+           }) {
+               Text("mainButtonTitle")
+                   .font(.title)
+                   .fontWeight(.bold)
+                   .padding()
+           }
+           .buttonStyle(.borderedProminent)
         }
-        .buttonStyle(.borderedProminent)
     }
     
     var map: some View {
