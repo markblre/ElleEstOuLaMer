@@ -131,6 +131,22 @@
           }
         }
       }
+    },
+    "openInWaze" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Waze"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans Waze"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

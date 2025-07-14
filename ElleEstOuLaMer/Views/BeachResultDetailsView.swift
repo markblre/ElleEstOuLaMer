@@ -32,6 +32,9 @@ struct BeachResultDetailsView: View {
                     MapOpenButton(title: "openInGoogleMaps") {
                         beachSearchViewModel.openInGoogleMaps()
                     }
+                    MapOpenButton(title: "openInWaze") {
+                        beachSearchViewModel.openInWaze()
+                    }
                 }
                 .padding()
                 

@@ -171,4 +171,19 @@ class BeachSearchViewModel: NSObject {
             }
         }
     }
+    
+    public func openInWaze() {
+        guard let currentBeach = currentBeachResult?.beach else {
+            return
+        }
+        
+        let urlScheme = "waze://?ll=\(currentBeach.latitude),\(currentBeach.longitude)&navigate=yes"
+        
+        if let url = URL(string: urlScheme), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        } else {
+            let appStoreURL = URL(string: "https://apps.apple.com/app/id323229106")!
+            UIApplication.shared.open(appStoreURL)
+        }
+    }
 }
