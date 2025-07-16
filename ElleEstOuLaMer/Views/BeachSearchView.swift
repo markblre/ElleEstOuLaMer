@@ -9,31 +9,28 @@ import SwiftUI
 import MapKit
 
 struct BeachSearchView: View {
-    
     private struct Constants {
         static let bottomPaddingMainButton: CGFloat = 50
         static let detailsSheetReducedHeight: CGFloat = 75
-        static let franceViewDistance: CLLocationDistance = 4_000_000
-        static let beachViewDistance: CLLocationDistance = 10_000
-        static let animationTriggerDistance: CLLocationDistance = 100_000
-        static let zoomDelaySeconds: TimeInterval = 2.0
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
-    
-    @State private var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     
     @State private var detailsSheetDetentSelection: PresentationDetent = .height(Constants.detailsSheetReducedHeight)
     
     var body: some View {
         @Bindable var beachSearchViewModel = beachSearchViewModel
         
-        ZStack(alignment: .bottom) {
-            map
-            if beachSearchViewModel.showMainButton {
-                mainButton
-                    .padding(.bottom, Constants.bottomPaddingMainButton)
-            }
+        ZStack {
+            BeachMapView()
+                .overlay {
+                    switch beachSearchViewModel.appState {
+                    case .searchSetup:
+                        searchSetupMapOverlay
+                    case .showingResults:
+                        showingResultsMapOverlay
+                    }
+                }
         }
         .simpleAlert(isPresented: $beachSearchViewModel.showLocationDeniedAlert,
                      title: "locationDeniedTitle",
@@ -41,15 +38,49 @@ struct BeachSearchView: View {
         .simpleAlert(isPresented: $beachSearchViewModel.showWaitingForLocationAlert,
                      title: "locationUnavailableTitle",
                      message: "locationUnavailableMessage")
-        .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
+        .sheet(isPresented: .constant(beachSearchViewModel.appState == .showingResults)) {
             if let currentBeachResult = beachSearchViewModel.currentBeachResult {
-                BeachResultDetailsView(for: currentBeachResult, collapseSheet: {
-                    detailsSheetDetentSelection = .height(Constants.detailsSheetReducedHeight)
-                })
+                BeachResultDetailsView(for: currentBeachResult, collapseSheet: collapseSheet)
                     .presentationDetents([.height(Constants.detailsSheetReducedHeight), .medium], selection: $detailsSheetDetentSelection)
                     .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                     .interactiveDismissDisabled(true)
+                    .onAppear {
+                        collapseSheet()
+                    }
             }
+        }
+    }
+    
+    var searchSetupMapOverlay: some View {
+        VStack {
+            Spacer()
+            if beachSearchViewModel.hasCustomUserLocation {
+                returnToMyLocationButton
+            }
+            mainButton
+                .padding(.bottom, Constants.bottomPaddingMainButton)
+        }
+    }
+    
+    var showingResultsMapOverlay: some View {
+        VStack {
+            if #available(iOS 26, *) {
+                Button("newSearchButtonTitle", systemImage: "arrow.counterclockwise") {
+                    beachSearchViewModel.newSearch()
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.glassProminent)
+                .font(.title2)
+            } else {
+                Button("newSearchButtonTitle", systemImage: "arrow.counterclockwise") {
+                    beachSearchViewModel.newSearch()
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderedProminent)
+                .font(.title2)
+            }
+
+            Spacer()
         }
     }
     
@@ -78,56 +109,35 @@ struct BeachSearchView: View {
         }
     }
     
-    var map: some View {
-        Map(position: $mapPosition) {
-            UserAnnotation()
-            currentBeachMarker
-        }
-        .mapStyle(.standard(elevation: .flat, emphasis: .automatic, pointsOfInterest: .excludingAll))
-        .onAppear {
-            beachSearchViewModel.startLocationTracking()
-        }
-        .onChange(of: beachSearchViewModel.currentBeachIndex) {
-            updateMapPositionWithAnimation()
+    @ViewBuilder
+    var returnToMyLocationButton: some View {
+        if #available(iOS 26, *) {
+            Button(action: {
+                beachSearchViewModel.resetCustomUserLocation()
+            }) {
+                HStack {
+                    Image(systemName: "location.fill")
+                    Text("returnToMyLocationButtonTitle")
+                        .font(.body)
+                }
+            }
+            .buttonStyle(.glassProminent)
+        } else {
+           Button(action: {
+               beachSearchViewModel.resetCustomUserLocation()
+           }) {
+               HStack {
+                   Image(systemName: "location.fill")
+                   Text("returnToMyLocationButtonTitle")
+                       .font(.body)
+               }
+           }
+           .buttonStyle(.borderedProminent)
         }
     }
     
-    @MapContentBuilder
-    var currentBeachMarker: some MapContent {
-        if let currentBeach = beachSearchViewModel.currentBeachResult?.beach {
-            Marker(currentBeach.name, systemImage: "beach.umbrella.fill", coordinate: currentBeach.coordinate)
-                .tint(.cyan)
-        }
-    }
-}
-    
-private extension BeachSearchView {
-    func updateMapPositionWithAnimation() {
-        guard let currentBeach = beachSearchViewModel.currentBeachResult?.beach else {
-            mapPosition = .userLocation(fallback: .automatic)
-            return
-        }
-        
-        let target = MapCamera(centerCoordinate: currentBeach.coordinate, distance: Constants.beachViewDistance, heading: 0, pitch: 0)
-        
-        guard let distanceFromLastSelection = beachSearchViewModel.distanceFromLastSelection,
-              distanceFromLastSelection >= Constants.animationTriggerDistance,
-              let midpointFromLastSelection = beachSearchViewModel.midpointFromLastSelection else {
-            withAnimation {
-                mapPosition = .camera(target)
-            }
-            return
-        }
-        
-        withAnimation() {
-            mapPosition = .camera(MapCamera(centerCoordinate: midpointFromLastSelection, distance: Constants.franceViewDistance, heading: 0, pitch: 0))
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.zoomDelaySeconds) {
-            withAnimation {
-                mapPosition = .camera(target)
-            }
-        }
+    private func collapseSheet() {
+        detailsSheetDetentSelection = .height(Constants.detailsSheetReducedHeight)
     }
 }
 

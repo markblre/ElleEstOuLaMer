@@ -9,6 +9,11 @@ import Foundation
 import MapKit
 import SwiftUI
 
+enum AppState: Equatable {
+    case searchSetup
+    case showingResults
+}
+
 @Observable
 class BeachSearchViewModel: NSObject {
     // MARK: - Properties
@@ -26,6 +31,12 @@ class BeachSearchViewModel: NSObject {
     
     private var hasLocationAuthorization: Bool {
         locationManager.authorizationStatus == .authorizedWhenInUse
+    }
+    
+    // MARK: - Init
+    override init() {
+        super.init()
+        startLocationTracking()
     }
     
     // MARK: - Private
@@ -62,13 +73,20 @@ class BeachSearchViewModel: NSObject {
     }
     
     // MARK: - Public
+    public var appState: AppState = .searchSetup
+
+    public var customUserLocation: CLLocation?
+    
+    public var customUserCoordinate: CLLocationCoordinate2D? {
+        guard let customUserLocation else {
+            return nil
+        }
+        return CLLocationCoordinate2D(latitude: customUserLocation.coordinate.latitude, longitude: customUserLocation.coordinate.longitude)
+    }
+    
     public var nearestBeaches: [BeachResult] = []
     
-    public var currentBeachIndex: Int? {
-        didSet {
-            showBeachDetailsSheet = currentBeachIndex != nil
-        }
-    }
+    public var currentBeachIndex: Int?
     
     public var currentBeachResult: BeachResult? {
         guard let currentBeachIndex else {
@@ -85,12 +103,10 @@ class BeachSearchViewModel: NSObject {
     
     public var showWaitingForLocationAlert: Bool = false
     
-    public var showBeachDetailsSheet: Bool = false
-    
-    public var showMainButton: Bool {
-        !showBeachDetailsSheet
+    public var hasCustomUserLocation: Bool {
+        customUserLocation != nil
     }
-    
+
     public var canShowNextBeach: Bool {
         guard let currentBeachIndex else { return false }
         return currentBeachIndex < nearestBeaches.count - 1
@@ -104,24 +120,52 @@ class BeachSearchViewModel: NSObject {
         locationManager.startUpdatingLocation()
     }
     
+    public func newSearch() {
+        appState = .searchSetup
+        customUserLocation = nil
+        nearestBeaches = []
+        currentBeachIndex = nil
+        distanceFromLastSelection = nil
+        midpointFromLastSelection = nil
+    }
+    
+    public func setCustomUserLocation(_ location: CLLocationCoordinate2D) {
+        customUserLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
+    }
+    
+    public func resetCustomUserLocation() {
+        customUserLocation = nil
+    }
+
     public func findNearestBeaches() {
         guard hasLocationAuthorization else {
             showLocationDeniedAlert = true
             return
         }
         
-        guard let userLocation = locationManager.location else {
-            showWaitingForLocationAlert = true
+        let originLocation: CLLocation? = {
+            if let customUserLocation = self.customUserLocation {
+                return customUserLocation
+            }
+            guard let userLocation = locationManager.location else {
+                showWaitingForLocationAlert = true
+                return nil
+            }
+            return userLocation
+        }()
+        
+        guard let originLocation else {
             return
         }
         
-        nearestBeaches = computeNearestBeaches(from: allBeaches, userLocation: userLocation)
+        nearestBeaches = computeNearestBeaches(from: allBeaches, userLocation: originLocation)
         
         if !nearestBeaches.isEmpty {
+            appState = .showingResults
             currentBeachIndex = 0
 
             if let currentBeach = currentBeachResult?.beach {
-                updateTransitionInfo(from: userLocation, to: currentBeach.location)
+                updateTransitionInfo(from: originLocation, to: currentBeach.location)
             }
         } else {
             currentBeachIndex = nil

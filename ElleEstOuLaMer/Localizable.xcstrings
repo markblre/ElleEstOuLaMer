@@ -1,6 +1,22 @@
 {
   "sourceLanguage" : "fr",
   "strings" : {
+    "customUserPositionMarkerLabel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom position"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position personnalisée"
+          }
+        }
+      }
+    },
     "locationDeniedMessage" : {
       "localizations" : {
         "en" : {
@@ -81,6 +97,22 @@
         }
       }
     },
+    "newSearchButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Search"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouvelle recherche"
+          }
+        }
+      }
+    },
     "nextBeachButtonTitle" : {
       "localizations" : {
         "en" : {
@@ -144,6 +176,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir dans Waze"
+          }
+        }
+      }
+    },
+    "returnToMyLocationButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to my location"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour à ma position"
           }
         }
       }
