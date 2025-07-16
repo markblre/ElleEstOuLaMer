@@ -196,7 +196,9 @@ class BeachSearchViewModel: NSObject {
         }
         
         let mapItem = self.createMapItem(for: currentBeach)
-        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault])
+        let launchOptions: [String:Any] = hasCustomUserLocation ? [:] : [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault]
+        
+        mapItem.openInMaps(launchOptions: launchOptions)
     }
     
     public func openInGoogleMaps() {
@@ -204,15 +206,10 @@ class BeachSearchViewModel: NSObject {
             return
         }
         
-        let urlScheme = "comgooglemaps://?daddr=\(currentBeach.latitude),\(currentBeach.longitude)"
-
-        if let url = URL(string: urlScheme), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        } else {
-            let webUrlString = "https://www.google.com/maps/dir/?api=1&destination=\(currentBeach.latitude),\(currentBeach.longitude)"
-            if let webUrl = URL(string: webUrlString) {
-                UIApplication.shared.open(webUrl)
-            }
+        let webUrlString = "https://www.google.com/maps/\(hasCustomUserLocation ? "search" : "dir")/?api=1&\(hasCustomUserLocation ? "query" : "destination")=\(currentBeach.latitude),\(currentBeach.longitude)"
+        
+        if let webUrl = URL(string: webUrlString) {
+            UIApplication.shared.open(webUrl)
         }
     }
     
@@ -221,7 +218,7 @@ class BeachSearchViewModel: NSObject {
             return
         }
         
-        let urlScheme = "waze://?ll=\(currentBeach.latitude),\(currentBeach.longitude)&navigate=yes"
+        let urlScheme = "waze://?ll=\(currentBeach.latitude),\(currentBeach.longitude)&navigate=\(hasCustomUserLocation ? "no" : "yes")"
         
         if let url = URL(string: urlScheme), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)

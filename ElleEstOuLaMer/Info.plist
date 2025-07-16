@@ -5,7 +5,6 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>waze</string>
-		<string>comgooglemaps</string>
 	</array>
 </dict>
 </plist>
