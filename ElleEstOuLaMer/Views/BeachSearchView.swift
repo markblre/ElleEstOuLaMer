@@ -11,7 +11,13 @@ import MapKit
 struct BeachSearchView: View {
     private struct Constants {
         static let bottomPaddingMainButton: CGFloat = 15
-        static let detailsSheetReducedHeight: CGFloat = 75
+        static var detailsSheetReducedHeight: CGFloat {
+            if #available(iOS 26, *) {
+                75
+            } else {
+                80
+            }
+        }
         static let aboutButtonOpacity: Double = 0.6
         static let bottomPaddingAboutButton: CGFloat = 10
     }

@@ -12,6 +12,20 @@ struct BeachResultDetailsView: View {
     private struct Constants {
         static let mainSpacing: CGFloat = 30
         static let navigationButtonSpacing: CGFloat = 10
+        static var topPadding: CGFloat {
+            if #available(iOS 26, *) {
+                0
+            } else {
+                10
+            }
+        }
+        static var bottomPadding: CGFloat {
+            if #available(iOS 26, *) {
+                0
+            } else {
+                16
+            }
+        }
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
@@ -52,6 +66,8 @@ struct BeachResultDetailsView: View {
                 }
             }
         }
+        .padding(.top, Constants.topPadding)
+        .padding(.bottom, Constants.bottomPadding)
     }
     
     @ViewBuilder
