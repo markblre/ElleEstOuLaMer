@@ -9,6 +9,11 @@ import SwiftUI
 import MapKit
 
 struct BeachResultDetailsView: View {
+    private struct Constants {
+        static let mainSpacing: CGFloat = 30
+        static let navigationButtonSpacing: CGFloat = 10
+    }
+    
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
     let beachResult: BeachResult
@@ -21,25 +26,30 @@ struct BeachResultDetailsView: View {
     }
     
     var body: some View {
-        VStack {
-            header
-                .padding(.top)
-            ScrollView(.vertical) {
-                VStack {
-                    MapOpenButton(title: "openInAppleMaps") {
-                        beachSearchViewModel.openInAppleMaps()
+        NavigationStack {
+            ScrollView() {
+                VStack(spacing: Constants.mainSpacing) {
+                    VStack(spacing: Constants.navigationButtonSpacing) {
+                        MapOpenButton(title: "openInAppleMaps") {
+                            beachSearchViewModel.openInAppleMaps()
+                        }
+                        MapOpenButton(title: "openInGoogleMaps") {
+                            beachSearchViewModel.openInGoogleMaps()
+                        }
+                        MapOpenButton(title: "openInWaze") {
+                            beachSearchViewModel.openInWaze()
+                        }
                     }
-                    MapOpenButton(title: "openInGoogleMaps") {
-                        beachSearchViewModel.openInGoogleMaps()
-                    }
-                    MapOpenButton(title: "openInWaze") {
-                        beachSearchViewModel.openInWaze()
-                    }
+                    nextBeachButton
                 }
                 .padding()
-                
-                nextBeachButton
-                    .padding()
+            }
+            .scrollDisabled(true)
+            .toolbarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    header
+                }
             }
         }
     }
