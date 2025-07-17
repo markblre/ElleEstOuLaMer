@@ -1,6 +1,38 @@
 {
   "sourceLanguage" : "fr",
   "strings" : {
+    "aboutButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos"
+          }
+        }
+      }
+    },
+    "AboutTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos"
+          }
+        }
+      }
+    },
     "customUserPositionMarkerLabel" : {
       "localizations" : {
         "en" : {
@@ -13,6 +45,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Position personnalisée"
+          }
+        }
+      }
+    },
+    "DataSourceNotice" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data from [data.gouv.fr](https://www.data.gouv.fr), published under the Open License 2.0."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données issues de [data.gouv.fr](https://www.data.gouv.fr), publiées sous Licence Ouverte 2.0."
+          }
+        }
+      }
+    },
+    "DevelopedByMarkBallereauLinkedIn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developed by Mark Ballereau ([LinkedIn](https://www.linkedin.com/in/markblre))"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Développé par Mark Ballereau ([LinkedIn](https://www.linkedin.com/in/markblre))"
           }
         }
       }

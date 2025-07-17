@@ -10,13 +10,17 @@ import MapKit
 
 struct BeachSearchView: View {
     private struct Constants {
-        static let bottomPaddingMainButton: CGFloat = 50
+        static let bottomPaddingMainButton: CGFloat = 15
         static let detailsSheetReducedHeight: CGFloat = 75
+        static let aboutButtonOpacity: Double = 0.6
+        static let bottomPaddingAboutButton: CGFloat = 10
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
     @State private var detailsSheetDetentSelection: PresentationDetent = .height(Constants.detailsSheetReducedHeight)
+    
+    @State private var aboutSheetIsPresented: Bool = false
     
     var body: some View {
         @Bindable var beachSearchViewModel = beachSearchViewModel
@@ -49,6 +53,9 @@ struct BeachSearchView: View {
                     }
             }
         }
+        .sheet(isPresented: $aboutSheetIsPresented) {
+            AboutView()
+        }
     }
     
     var searchSetupMapOverlay: some View {
@@ -59,6 +66,19 @@ struct BeachSearchView: View {
             }
             mainButton
                 .padding(.bottom, Constants.bottomPaddingMainButton)
+            HStack {
+                Spacer()
+                Button("aboutButtonTitle") {
+                    aboutSheetIsPresented = true
+                }
+                .buttonStyle(.plain)
+                .font(.caption)
+                .underline()
+                .foregroundColor(.primary)
+                .opacity(Constants.aboutButtonOpacity)
+                .padding(.trailing)
+                .padding(.bottom, Constants.bottomPaddingAboutButton)
+            }
         }
     }
     
