@@ -7,7 +7,7 @@
 
 import CoreLocation
 
-struct BeachResult {
+struct BeachResult: Equatable {
     let beach: Beach
     let distance: CLLocationDistance
 }

@@ -9,21 +9,21 @@ import SwiftUI
 
 struct SimpleAlert: ViewModifier {
     let isPresented: Binding<Bool>
-    let title: LocalizedStringKey
-    let message: LocalizedStringKey
+    let titleKey: LocalizedStringKey
+    let messageKey: LocalizedStringKey
     
     func body(content: Content) -> some View {
         content
-            .alert(title, isPresented: isPresented) {
+            .alert(titleKey, isPresented: isPresented) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text(message)
+                Text(messageKey)
             }
     }
 }
 
 extension View {
-    func simpleAlert(isPresented: Binding<Bool>, title: LocalizedStringKey, message: LocalizedStringKey) -> some View {
-        self.modifier(SimpleAlert(isPresented: isPresented, title: title, message: message))
+    func simpleAlert(isPresented: Binding<Bool>, titleKey: LocalizedStringKey, messageKey: LocalizedStringKey) -> some View {
+        self.modifier(SimpleAlert(isPresented: isPresented, titleKey: titleKey, messageKey: messageKey))
     }
 }

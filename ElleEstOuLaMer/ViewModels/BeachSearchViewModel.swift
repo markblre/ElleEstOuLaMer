@@ -5,226 +5,141 @@
 //  Created by Mark Ballereau on 08/07/2025.
 //
 
-import Foundation
-import MapKit
+import CoreLocation
 import SwiftUI
 
-enum AppState: Equatable {
-    case searchSetup
-    case showingResults
-}
-
+@MainActor
 @Observable
-class BeachSearchViewModel: NSObject {
+class BeachSearchViewModel {
     // MARK: - Properties
-    private let locationManager = CLLocationManager()
+    private let locationService: LocationService
+    private let beachService: BeachService
+    private let navigationService: ExternalNavigationService
     
-    private let allBeaches: [Beach] = {
-        if let url = Bundle.main.url(forResource: "beaches-france-2024", withExtension: "json"),
-           let data = try? Data(contentsOf: url),
-           let beaches = try? JSONDecoder().decode([Beach].self, from: data) {
-            return beaches
-        } else {
-            return []
+    public var appState: AppState = .searchSetup(isSearching: false) {
+        didSet {
+            switch appState {
+            case .showSearchResults, .showBeach:
+                showBeachDetailsSheet = true
+            default:
+                showBeachDetailsSheet = false
+            }
         }
-    }()
-    
-    private var hasLocationAuthorization: Bool {
-        locationManager.authorizationStatus == .authorizedWhenInUse
     }
+    private(set) var originLocationMode: OriginLocationMode = .user
+    
+    public var showBeachDetailsSheet: Bool = false
+    
+    public var isShowingAlert: Bool = false
+    private(set) var alertTitleKey: LocalizedStringKey = ""
+    private(set) var alertMessageKey: LocalizedStringKey = ""
     
     // MARK: - Init
-    override init() {
-        super.init()
-        startLocationTracking()
-    }
-    
-    // MARK: - Private
-    private func computeNearestBeaches(from beaches: [Beach], userLocation: CLLocation, limit: Int = 5) -> [BeachResult] {
-        return Array(beaches.map { beach in
-            BeachResult(beach: beach, distance: userLocation.distance(from: beach.location))
-        }
-        .sorted { $0.distance < $1.distance }
-        .prefix(limit))
-    }
-    
-    private func createMapItem(for beach: Beach) -> MKMapItem {
-        let mapItem: MKMapItem
-        if #available(iOS 26.0, *) {
-            mapItem = MKMapItem(location: CLLocation(latitude: beach.latitude, longitude: beach.longitude), address: nil)
-        } else {
-            mapItem = MKMapItem(placemark: MKPlacemark(coordinate: beach.coordinate))
-        }
-        
-        mapItem.name = beach.name
-        mapItem.pointOfInterestCategory = .beach
-        return mapItem
-    }
-    
-    private func midpoint(between location1: CLLocation, and location2: CLLocation) -> CLLocationCoordinate2D {
-        let midLat = (location1.coordinate.latitude + location2.coordinate.latitude) / 2
-        let midLon = (location1.coordinate.longitude + location2.coordinate.longitude) / 2
-        return CLLocationCoordinate2D(latitude: midLat, longitude: midLon)
-    }
-    
-    private func updateTransitionInfo(from fromLocation: CLLocation, to toLocation: CLLocation) {
-        distanceFromLastSelection = toLocation.distance(from: fromLocation)
-        midpointFromLastSelection = midpoint(between: fromLocation, and: toLocation)
+    init(locationService: LocationService = LocationService(),
+         beachService: BeachService = BeachService(),
+         navigationService: ExternalNavigationService = ExternalNavigationService()) {
+        self.locationService = locationService
+        self.beachService = beachService
+        self.navigationService = navigationService
     }
     
     // MARK: - Public
-    public var appState: AppState = .searchSetup
-
-    public var customUserLocation: CLLocation?
-    
-    public var customUserCoordinate: CLLocationCoordinate2D? {
-        guard let customUserLocation else {
-            return nil
-        }
-        return CLLocationCoordinate2D(latitude: customUserLocation.coordinate.latitude, longitude: customUserLocation.coordinate.longitude)
+    public func newSearch() {
+        appState = .searchSetup(isSearching: false)
+        originLocationMode = .user
     }
     
-    public var nearestBeaches: [BeachResult] = []
-    
-    public var currentBeachIndex: Int?
-    
-    public var currentBeachResult: BeachResult? {
-        guard let currentBeachIndex else {
-            return nil
-        }
-        return nearestBeaches[safe: currentBeachIndex]
+    public var isUsingCustomOriginLocation: Bool {
+        if case .custom = originLocationMode { true } else { false }
     }
     
-    public var distanceFromLastSelection: CLLocationDistance?
+    public func setOriginLocationMode(to newOriginLocationMode: OriginLocationMode) {
+        originLocationMode = newOriginLocationMode
+    }
     
-    public var midpointFromLastSelection: CLLocationCoordinate2D?
-    
-    public var showLocationDeniedAlert: Bool = false
-    
-    public var showWaitingForLocationAlert: Bool = false
-    
-    public var hasCustomUserLocation: Bool {
-        customUserLocation != nil
+    public func search() async {
+        appState = .searchSetup(isSearching: true)
+        
+        guard let originCoordinate = await resolveOriginCoordinate() else {
+            appState = .searchSetup(isSearching: false)
+            return
+        }
+        
+        let nearestBeaches = beachService.searchNearestBeaches(from: originCoordinate)
+        
+        if !nearestBeaches.isEmpty {
+            appState = .showSearchResults(nearestBeaches, currentBeachIndex: 0)
+        } else {
+            appState = .searchSetup(isSearching: false)
+        }
     }
 
     public var canShowNextBeach: Bool {
-        guard let currentBeachIndex else { return false }
-        return currentBeachIndex < nearestBeaches.count - 1
-    }
-    
-    public func startLocationTracking() {
-        if !hasLocationAuthorization {
-            locationManager.requestWhenInUseAuthorization()
-        }
-        
-        locationManager.startUpdatingLocation()
-    }
-    
-    public func newSearch() {
-        appState = .searchSetup
-        customUserLocation = nil
-        nearestBeaches = []
-        currentBeachIndex = nil
-        distanceFromLastSelection = nil
-        midpointFromLastSelection = nil
-    }
-    
-    public func setCustomUserLocation(_ location: CLLocationCoordinate2D) {
-        customUserLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
-    }
-    
-    public func resetCustomUserLocation() {
-        customUserLocation = nil
-    }
-
-    public func findNearestBeaches() {
-        guard hasLocationAuthorization else {
-            showLocationDeniedAlert = true
-            return
-        }
-        
-        let originLocation: CLLocation? = {
-            if let customUserLocation = self.customUserLocation {
-                return customUserLocation
-            }
-            guard let userLocation = locationManager.location else {
-                showWaitingForLocationAlert = true
-                return nil
-            }
-            return userLocation
-        }()
-        
-        guard let originLocation else {
-            return
-        }
-        
-        nearestBeaches = computeNearestBeaches(from: allBeaches, userLocation: originLocation)
-        
-        if !nearestBeaches.isEmpty {
-            appState = .showingResults
-            currentBeachIndex = 0
-
-            if let currentBeach = currentBeachResult?.beach {
-                updateTransitionInfo(from: originLocation, to: currentBeach.location)
-            }
-        } else {
-            currentBeachIndex = nil
-            distanceFromLastSelection = nil
-            midpointFromLastSelection = nil
+        switch appState {
+        case .showSearchResults(let nearestBeaches, let currentBeachIndex):
+            return currentBeachIndex < nearestBeaches.count - 1
+        default:
+            return false
         }
     }
     
     public func showNextBeachResult() {
-        guard let currentBeachIndex,
-              currentBeachIndex < nearestBeaches.count - 1 else {
+        switch appState {
+        case .showSearchResults(let nearestBeaches, let currentBeachIndex):
+            guard canShowNextBeach else { return }
+            appState = .showSearchResults(nearestBeaches, currentBeachIndex: currentBeachIndex + 1)
+        default:
             return
-        }
-        
-        let previousBeach = currentBeachResult?.beach
-        
-        self.currentBeachIndex = currentBeachIndex + 1
-        
-        if let previousBeach,
-           let currentBeach = currentBeachResult?.beach {
-            updateTransitionInfo(from: previousBeach.location, to: currentBeach.location)
         }
     }
     
-    public func openInAppleMaps() {
-        guard let currentBeach = currentBeachResult?.beach else {
-            return
-        }
-        
-        let mapItem = self.createMapItem(for: currentBeach)
-        let launchOptions: [String:Any] = hasCustomUserLocation ? [:] : [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault]
-        
-        mapItem.openInMaps(launchOptions: launchOptions)
+    public func openInAppleMaps(_ beach: Beach) {
+        navigationService.openInAppleMaps(beach, withNavigation: !isUsingCustomOriginLocation)
     }
     
-    public func openInGoogleMaps() {
-        guard let currentBeach = currentBeachResult?.beach else {
-            return
-        }
-        
-        let webUrlString = "https://www.google.com/maps/\(hasCustomUserLocation ? "search" : "dir")/?api=1&\(hasCustomUserLocation ? "query" : "destination")=\(currentBeach.latitude),\(currentBeach.longitude)"
-        
-        if let webUrl = URL(string: webUrlString) {
-            UIApplication.shared.open(webUrl)
+    public func openInGoogleMaps(_ beach: Beach) {
+        navigationService.openInGoogleMaps(beach, withNavigation: !isUsingCustomOriginLocation)
+    }
+    
+    public func openInWaze(_ beach: Beach) {
+        navigationService.openInWaze(beach, withNavigation: !isUsingCustomOriginLocation)
+    }
+    
+    // MARK: - Private
+    private func resolveOriginCoordinate() async -> CLLocationCoordinate2D? {
+        switch originLocationMode {
+        case .custom(let coordinate):
+            return coordinate
+        case .user:
+            do {
+                return try await locationService.requestCurrentCoordinate()
+            } catch {
+                if let clError = error as? CLError {
+                    switch clError.code {
+                    case .denied:
+                        showAlert(titleKey: "locationErrorTitle",
+                                  messageKey: "locationAccessDeniedMessage")
+                        return nil
+                    case .network:
+                        showAlert(titleKey: "locationErrorTitle",
+                                  messageKey: "locationNetworkErrorMessage")
+                        return nil
+                    default:
+                        showAlert(titleKey: "locationErrorTitle",
+                                  messageKey: "locationUnknownErrorMessage")
+                        return nil
+                    }
+                }
+                showAlert(titleKey: "locationErrorTitle",
+                          messageKey: "unknownErrorMessage")
+                return nil
+            }
         }
     }
     
-    public func openInWaze() {
-        guard let currentBeach = currentBeachResult?.beach else {
-            return
-        }
-        
-        let urlScheme = "waze://?ll=\(currentBeach.latitude),\(currentBeach.longitude)&navigate=\(hasCustomUserLocation ? "no" : "yes")"
-        
-        if let url = URL(string: urlScheme), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        } else {
-            let appStoreURL = URL(string: "https://apps.apple.com/app/id323229106")!
-            UIApplication.shared.open(appStoreURL)
-        }
+    private func showAlert(titleKey: LocalizedStringKey, messageKey: LocalizedStringKey) {
+        alertTitleKey = titleKey
+        alertMessageKey = messageKey
+        isShowingAlert = true
     }
 }

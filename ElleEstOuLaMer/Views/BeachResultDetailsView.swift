@@ -26,6 +26,8 @@ struct BeachResultDetailsView: View {
                 16
             }
         }
+        static let meterToKilometerThreshold: CLLocationDistance = 1000
+        static let kilometerDecimalThreshold: CLLocationDistance = 10_000
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
@@ -45,13 +47,13 @@ struct BeachResultDetailsView: View {
                 VStack(spacing: Constants.mainSpacing) {
                     VStack(spacing: Constants.navigationButtonSpacing) {
                         MapOpenButton(title: "openInAppleMaps") {
-                            beachSearchViewModel.openInAppleMaps()
+                            beachSearchViewModel.openInAppleMaps(beachResult.beach)
                         }
                         MapOpenButton(title: "openInGoogleMaps") {
-                            beachSearchViewModel.openInGoogleMaps()
+                            beachSearchViewModel.openInGoogleMaps(beachResult.beach)
                         }
                         MapOpenButton(title: "openInWaze") {
-                            beachSearchViewModel.openInWaze()
+                            beachSearchViewModel.openInWaze(beachResult.beach)
                         }
                     }
                     nextBeachButton
@@ -96,11 +98,11 @@ extension BeachResultDetailsView {
         formatter.numberStyle = .decimal
         
         switch distance {
-        case ..<1000:
+        case ..<Constants.meterToKilometerThreshold:
             formatter.maximumFractionDigits = 0
             let mString = formatter.string(from: NSNumber(value: distance)) ?? "\(Int(distance))"
             return "\(mString) m"
-        case 1000..<10000:
+        case Constants.meterToKilometerThreshold..<Constants.kilometerDecimalThreshold:
             formatter.maximumFractionDigits = 1
             let km = distance / 1000
             let kmString = formatter.string(from: NSNumber(value: km)) ?? String(format: "%.1f", km)

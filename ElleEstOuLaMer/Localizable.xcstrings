@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "fr",
   "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
     "aboutButtonTitle" : {
       "localizations" : {
         "en" : {
@@ -81,66 +84,66 @@
         }
       }
     },
-    "locationDeniedMessage" : {
+    "locationAccessDeniedMessage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location access is disabled. Enable location services in Settings so the app can show you the nearest beach."
+            "value" : "Location access was denied. Please enable it in Settings."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’accès à ta position est désactivé. Active la localisation dans les Réglages pour que l’app puisse te montrer la plage la plus proche."
+            "value" : "L’accès à la localisation a été refusé. Veuillez autoriser l’accès dans les réglages."
           }
         }
       }
     },
-    "locationDeniedTitle" : {
+    "locationErrorTitle" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You want to find the sea?"
+            "value" : "Location Error"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu veux trouver la mer ?"
+            "value" : "Erreur de localisation"
           }
         }
       }
     },
-    "locationUnavailableMessage" : {
+    "locationNetworkErrorMessage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We haven’t been able to get your location yet. Please try again in a few seconds."
+            "value" : "Unable to determine your location. Please check your network connection or try again later."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nous n’avons pas encore pu récupérer ta position. Réessaie dans quelques secondes."
+            "value" : "Impossible d’obtenir votre position. Vérifiez votre connexion réseau ou réessayez plus tard."
           }
         }
       }
     },
-    "locationUnavailableTitle" : {
+    "locationUnknownErrorMessage" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location unavailable"
+            "value" : "An unknown error occurred while determining your location. Please try again."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Position indisponible"
+            "value" : "Une erreur inconnue est survenue lors de la localisation. Veuillez réessayer."
           }
         }
       }
@@ -256,6 +259,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retour à ma position"
+          }
+        }
+      }
+    },
+    "unknownErrorMessage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An unexpected error occurred. Please try again."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une erreur inattendue est survenue. Veuillez réessayer."
           }
         }
       }

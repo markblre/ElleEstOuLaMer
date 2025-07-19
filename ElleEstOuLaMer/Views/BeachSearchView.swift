@@ -11,20 +11,14 @@ import MapKit
 struct BeachSearchView: View {
     private struct Constants {
         static let bottomPaddingMainButton: CGFloat = 15
-        static var detailsSheetReducedHeight: CGFloat {
-            if #available(iOS 26, *) {
-                75
-            } else {
-                80
-            }
-        }
+        static var collapsedDetentFraction: PresentationDetent = .fraction(0.1)
         static let aboutButtonOpacity: Double = 0.6
         static let bottomPaddingAboutButton: CGFloat = 10
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
-    @State private var detailsSheetDetentSelection: PresentationDetent = .height(Constants.detailsSheetReducedHeight)
+    @State private var detailsSheetDetentSelection: PresentationDetent = Constants.collapsedDetentFraction
     
     @State private var aboutSheetIsPresented: Bool = false
     
@@ -37,21 +31,18 @@ struct BeachSearchView: View {
                     switch beachSearchViewModel.appState {
                     case .searchSetup:
                         searchSetupMapOverlay
-                    case .showingResults:
+                    case .showSearchResults, .showBeach:
                         showingResultsMapOverlay
                     }
                 }
         }
-        .simpleAlert(isPresented: $beachSearchViewModel.showLocationDeniedAlert,
-                     title: "locationDeniedTitle",
-                     message: "locationDeniedMessage")
-        .simpleAlert(isPresented: $beachSearchViewModel.showWaitingForLocationAlert,
-                     title: "locationUnavailableTitle",
-                     message: "locationUnavailableMessage")
-        .sheet(isPresented: .constant(beachSearchViewModel.appState == .showingResults)) {
-            if let currentBeachResult = beachSearchViewModel.currentBeachResult {
+        .simpleAlert(isPresented: $beachSearchViewModel.isShowingAlert,
+                     titleKey: beachSearchViewModel.alertTitleKey,
+                     messageKey: beachSearchViewModel.alertMessageKey)
+        .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
+            if let currentBeachResult = beachSearchViewModel.appState.currentBeach {
                 BeachResultDetailsView(for: currentBeachResult, collapseSheet: collapseSheet)
-                    .presentationDetents([.height(Constants.detailsSheetReducedHeight), .medium], selection: $detailsSheetDetentSelection)
+                    .presentationDetents([Constants.collapsedDetentFraction, .medium], selection: $detailsSheetDetentSelection)
                     .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                     .interactiveDismissDisabled(true)
                     .onAppear {
@@ -67,7 +58,7 @@ struct BeachSearchView: View {
     var searchSetupMapOverlay: some View {
         VStack {
             Spacer()
-            if beachSearchViewModel.hasCustomUserLocation {
+            if beachSearchViewModel.isUsingCustomOriginLocation {
                 returnToMyLocationButton
             }
             mainButton
@@ -114,7 +105,9 @@ struct BeachSearchView: View {
     var mainButton: some View {
         if #available(iOS 26, *) {
             Button(action: {
-                beachSearchViewModel.findNearestBeaches()
+                Task {
+                    await beachSearchViewModel.search()
+                }
             }) {
                 Text("mainButtonTitle")
                     .font(.title)
@@ -122,9 +115,17 @@ struct BeachSearchView: View {
                     .padding()
             }
             .buttonStyle(.glassProminent)
+            .disabled(beachSearchViewModel.appState.isSearching)
+            .overlay {
+                if beachSearchViewModel.appState.isSearching {
+                    ProgressView()
+                }
+            }
         } else {
            Button(action: {
-               beachSearchViewModel.findNearestBeaches()
+               Task {
+                   await beachSearchViewModel.search()
+               }
            }) {
                Text("mainButtonTitle")
                    .font(.title)
@@ -132,6 +133,12 @@ struct BeachSearchView: View {
                    .padding()
            }
            .buttonStyle(.borderedProminent)
+           .disabled(beachSearchViewModel.appState.isSearching)
+           .overlay {
+               if beachSearchViewModel.appState.isSearching {
+                   ProgressView()
+               }
+           }
         }
     }
     
@@ -139,7 +146,7 @@ struct BeachSearchView: View {
     var returnToMyLocationButton: some View {
         if #available(iOS 26, *) {
             Button(action: {
-                beachSearchViewModel.resetCustomUserLocation()
+                beachSearchViewModel.setOriginLocationMode(to: .user)
             }) {
                 HStack {
                     Image(systemName: "location.fill")
@@ -150,7 +157,7 @@ struct BeachSearchView: View {
             .buttonStyle(.glassProminent)
         } else {
            Button(action: {
-               beachSearchViewModel.resetCustomUserLocation()
+               beachSearchViewModel.setOriginLocationMode(to: .user)
            }) {
                HStack {
                    Image(systemName: "location.fill")
@@ -163,11 +170,6 @@ struct BeachSearchView: View {
     }
     
     private func collapseSheet() {
-        detailsSheetDetentSelection = .height(Constants.detailsSheetReducedHeight)
+        detailsSheetDetentSelection = Constants.collapsedDetentFraction
     }
-}
-
-#Preview {
-    BeachSearchView()
-        .environment(BeachSearchViewModel())
 }

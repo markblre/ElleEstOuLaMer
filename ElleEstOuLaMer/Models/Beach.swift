@@ -5,7 +5,6 @@
 //  Created by Mark Ballereau on 08/07/2025.
 //
 
-import Foundation
 import CoreLocation
 
 struct Beach: Identifiable, Decodable, Equatable {
@@ -20,9 +19,5 @@ struct Beach: Identifiable, Decodable, Equatable {
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-    
-    var location: CLLocation {
-        CLLocation(latitude: latitude, longitude: longitude)
     }
 }
