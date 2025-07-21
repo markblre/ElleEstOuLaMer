@@ -7,6 +7,7 @@
 
 import CoreLocation
 import SwiftUI
+import SwiftData
 
 @MainActor
 @Observable
@@ -15,6 +16,8 @@ class BeachSearchViewModel {
     private let locationService: LocationService
     private let beachService: BeachService
     private let navigationService: ExternalNavigationService
+    
+    private let modelContext: ModelContext
     
     public var appState: AppState = .searchSetup(isSearching: false) {
         didSet {
@@ -28,6 +31,8 @@ class BeachSearchViewModel {
     }
     private(set) var originLocationMode: OriginLocationMode = .user
     
+    private(set) var favorites: [FavoriteBeach] = []
+    
     public var showBeachDetailsSheet: Bool = false
     
     public var isShowingAlert: Bool = false
@@ -37,10 +42,13 @@ class BeachSearchViewModel {
     // MARK: - Init
     init(locationService: LocationService = LocationService(),
          beachService: BeachService = BeachService(),
-         navigationService: ExternalNavigationService = ExternalNavigationService()) {
+         navigationService: ExternalNavigationService = ExternalNavigationService(),
+         modelContext: ModelContext) {
         self.locationService = locationService
         self.beachService = beachService
         self.navigationService = navigationService
+        self.modelContext = modelContext
+        loadFavorites()
     }
     
     // MARK: - Public
@@ -92,6 +100,37 @@ class BeachSearchViewModel {
         }
     }
     
+    public func beachDetails(for beachID: String) -> Beach? {
+        beachService.beachDetails(for: beachID)
+    }
+    
+    public func isFavorite(beach: Beach) -> Bool {
+        favorites.contains(where: { $0.beachID == beach.id })
+    }
+    
+    public func toggleFavorite(for beach: Beach) {
+        if let existing = favorites.first(where: { $0.beachID == beach.id }) {
+            modelContext.delete(existing)
+        } else {
+            let newFavorite = FavoriteBeach(beachID: beach.id)
+            modelContext.insert(newFavorite)
+        }
+
+        loadFavorites()
+    }
+    
+    public func selectFavorite(_ beach: Beach) async {
+        guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else { return }
+        
+        let distance = searchOriginCoordinate.distance(from: beach.coordinate)
+        
+        let beachResult = BeachResult(beach: beach,
+                                      distance: distance,
+                                      searchOriginCoordinate: searchOriginCoordinate)
+        
+        appState = .showBeach(beachResult)
+    }
+    
     public func openInAppleMaps(_ beach: Beach) {
         navigationService.openInAppleMaps(beach, withNavigation: !isUsingCustomOriginLocation)
     }
@@ -133,6 +172,15 @@ class BeachSearchViewModel {
                           messageKey: "unknownErrorMessage")
                 return nil
             }
+        }
+    }
+    
+    private func loadFavorites() {
+        do {
+            let descriptor = FetchDescriptor<FavoriteBeach>()
+            favorites = try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch favorites: \(error)")
         }
     }
     

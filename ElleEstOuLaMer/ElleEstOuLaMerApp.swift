@@ -6,15 +6,28 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ElleEstOuLaMerApp: App {
-    @State private var beachSearchViewModel = BeachSearchViewModel()
+    let container: ModelContainer
+    @State private var beachSearchViewModel: BeachSearchViewModel
+    
+    init() {
+            do {
+                container = try ModelContainer(for: FavoriteBeach.self)
+            } catch {
+                fatalError("Failed to create ModelContainer.")
+            }
+
+            _beachSearchViewModel = State(initialValue: BeachSearchViewModel(modelContext: container.mainContext))
+        }
     
     var body: some Scene {
         WindowGroup {
             BeachSearchView()
                 .environment(beachSearchViewModel)
         }
+        .modelContainer(container)
     }
 }

@@ -56,7 +56,9 @@ struct BeachResultDetailsView: View {
                             beachSearchViewModel.openInWaze(beachResult.beach)
                         }
                     }
-                    nextBeachButton
+                    if case .showSearchResults = beachSearchViewModel.appState {
+                        nextBeachButton
+                    }
                 }
                 .padding()
             }
@@ -65,6 +67,13 @@ struct BeachResultDetailsView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     header
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        beachSearchViewModel.toggleFavorite(for: beachResult.beach)
+                    } label: {
+                        Image(systemName: beachSearchViewModel.isFavorite(beach: beachResult.beach) ? "star.fill" : "star")
+                    }
                 }
             }
         }

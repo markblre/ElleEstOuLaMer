@@ -20,6 +20,7 @@ struct BeachSearchView: View {
     
     @State private var detailsSheetDetentSelection: PresentationDetent = Constants.collapsedDetentFraction
     
+    @State private var favoritesSheetIsPresented: Bool = false
     @State private var aboutSheetIsPresented: Bool = false
     
     var body: some View {
@@ -51,6 +52,9 @@ struct BeachSearchView: View {
                     }
             }
         }
+        .sheet(isPresented: $favoritesSheetIsPresented) {
+            FavoritesView()
+        }
         .sheet(isPresented: $aboutSheetIsPresented) {
             AboutView()
         }
@@ -58,6 +62,7 @@ struct BeachSearchView: View {
     
     var searchSetupMapOverlay: some View {
         VStack {
+            favoritesButton
             Spacer()
             if beachSearchViewModel.isUsingCustomOriginLocation {
                 returnToMyLocationButton
@@ -78,6 +83,28 @@ struct BeachSearchView: View {
                 .padding(.trailing)
                 .padding(.bottom, Constants.bottomPaddingAboutButton)
             }
+        }
+    }
+    
+    var favoritesButton: some View {
+        VStack {
+            if #available(iOS 26, *) {
+                Button("favoritesButtonTitle", systemImage: "star.fill") {
+                    favoritesSheetIsPresented = true
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.glassProminent)
+                .font(.title2)
+            } else {
+                Button("favoritesButtonTitle", systemImage: "star.fill") {
+                    favoritesSheetIsPresented = true
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderedProminent)
+                .font(.title2)
+            }
+
+            Spacer()
         }
     }
     

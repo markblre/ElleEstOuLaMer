@@ -21,6 +21,10 @@ struct BeachService {
         }
     }
     
+    public func beachDetails(for beachID: String) -> Beach? {
+        return allBeaches.first { $0.id == beachID }
+    }
+    
     public func searchNearestBeaches(from searchOriginCoordinate: CLLocationCoordinate2D, limit maxCount: Int = 5) -> [BeachResult] {
         let results = allBeaches.map { beach in
             BeachResult(beach: beach,
