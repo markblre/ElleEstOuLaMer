@@ -27,6 +27,7 @@ struct BeachSearchView: View {
         
         ZStack {
             BeachMapView()
+                .allowsHitTesting(!beachSearchViewModel.appState.isSearching)
                 .overlay {
                     switch beachSearchViewModel.appState {
                     case .searchSetup:
@@ -68,6 +69,7 @@ struct BeachSearchView: View {
                 Button("aboutButtonTitle") {
                     aboutSheetIsPresented = true
                 }
+                .disabled(beachSearchViewModel.appState.isSearching)
                 .buttonStyle(.plain)
                 .font(.caption)
                 .underline()
