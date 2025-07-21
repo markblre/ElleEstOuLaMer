@@ -46,7 +46,6 @@ class BeachSearchViewModel {
     // MARK: - Public
     public func newSearch() {
         appState = .searchSetup(isSearching: false)
-        originLocationMode = .user
     }
     
     public var isUsingCustomOriginLocation: Bool {

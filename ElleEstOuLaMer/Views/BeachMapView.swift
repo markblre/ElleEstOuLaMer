@@ -74,10 +74,8 @@ struct BeachMapView: View {
 extension BeachMapView {
     private func updateMapPosition(for appState: AppState) {
         switch appState {
-        case .searchSetup(let isSearching):
-            withAnimation {
-                mapPosition = .userLocation(fallback: .automatic)
-            }
+        case .searchSetup:
+            updateMapPosition(for: beachSearchViewModel.originLocationMode)
             previousBeachCoordinate = nil
         case .showSearchResults, .showBeach:
             guard let currentBeach = appState.currentBeach else { return }
