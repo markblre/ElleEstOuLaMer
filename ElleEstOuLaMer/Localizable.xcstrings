@@ -36,7 +36,7 @@
         }
       }
     },
-    "customUserPositionMarkerLabel" : {
+    "customSearchOriginMarkerLabel" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {

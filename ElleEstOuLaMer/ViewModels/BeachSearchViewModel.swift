@@ -60,12 +60,12 @@ class BeachSearchViewModel {
     public func search() async {
         appState = .searchSetup(isSearching: true)
         
-        guard let originCoordinate = await resolveOriginCoordinate() else {
+        guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {
             appState = .searchSetup(isSearching: false)
             return
         }
         
-        let nearestBeaches = beachService.searchNearestBeaches(from: originCoordinate)
+        let nearestBeaches = beachService.searchNearestBeaches(from: searchOriginCoordinate)
         
         if !nearestBeaches.isEmpty {
             appState = .showSearchResults(nearestBeaches, currentBeachIndex: 0)
@@ -106,7 +106,7 @@ class BeachSearchViewModel {
     }
     
     // MARK: - Private
-    private func resolveOriginCoordinate() async -> CLLocationCoordinate2D? {
+    private func resolveSearchOriginCoordinate() async -> CLLocationCoordinate2D? {
         switch originLocationMode {
         case .custom(let coordinate):
             return coordinate

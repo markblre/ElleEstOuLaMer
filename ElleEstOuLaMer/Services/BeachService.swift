@@ -21,9 +21,11 @@ struct BeachService {
         }
     }
     
-    public func searchNearestBeaches(from originCoordinate: CLLocationCoordinate2D, limit maxCount: Int = 5) -> [BeachResult] {
+    public func searchNearestBeaches(from searchOriginCoordinate: CLLocationCoordinate2D, limit maxCount: Int = 5) -> [BeachResult] {
         let results = allBeaches.map { beach in
-            BeachResult(beach: beach, distance: originCoordinate.distance(from: beach.coordinate))
+            BeachResult(beach: beach,
+                        distance: searchOriginCoordinate.distance(from: beach.coordinate),
+                        searchOriginCoordinate: searchOriginCoordinate)
         }
         let sortedResults = results.sorted { $0.distance < $1.distance }
         return Array(sortedResults.prefix(maxCount))
