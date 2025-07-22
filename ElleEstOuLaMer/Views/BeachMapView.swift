@@ -10,7 +10,7 @@ import MapKit
 
 struct BeachMapView: View {
     private struct Constants {
-        static let beachViewDistance: CLLocationDistance = 15_000
+        static let beachViewDistance: CLLocationDistance = 12_000
         static let userPositionViewDistance: CLLocationDistance = 5_500
         static let firstTransitionDistanceThreshold: Double = 5_000
         static let nextTransitionDistanceThreshold: Double = 50_000
@@ -134,8 +134,4 @@ extension BeachMapView {
             }
         }
     }
-}
-
-#Preview {
-    BeachMapView()
 }
