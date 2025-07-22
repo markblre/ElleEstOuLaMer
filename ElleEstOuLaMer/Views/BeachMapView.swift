@@ -25,6 +25,14 @@ struct BeachMapView: View {
     
     @State private var pendingCameraTransition: (() -> Void)?
     
+    @State private var performTransitionCompletion: Bool = false
+    
+    private var onTransitionCompletion: (() -> Void)
+    
+    init(onTransitionCompletion: @escaping () -> Void) {
+        self.onTransitionCompletion = onTransitionCompletion
+    }
+    
     var body: some View {
         MapReader { proxy in
             Map(position: $mapPosition) {
@@ -37,6 +45,11 @@ struct BeachMapView: View {
             }
             .mapStyle(.standard(elevation: .flat, emphasis: .automatic, pointsOfInterest: .excludingAll))
             .onMapCameraChange { context in
+                if performTransitionCompletion {
+                    onTransitionCompletion()
+                    performTransitionCompletion = false
+                }
+                
                 pendingCameraTransition?()
                 pendingCameraTransition = nil
             }
@@ -116,6 +129,7 @@ extension BeachMapView {
             withAnimation {
                 mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.beachViewDistance))
             }
+            performTransitionCompletion = true
             return
         }
         
@@ -129,8 +143,11 @@ extension BeachMapView {
         }
         
         pendingCameraTransition = {
-            withAnimation {
-                mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.beachViewDistance))
+            if beachSearchViewModel.appState.isPresentingBeach {
+                withAnimation {
+                    mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.beachViewDistance))
+                }
+                performTransitionCompletion = true
             }
         }
     }

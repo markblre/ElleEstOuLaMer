@@ -18,6 +18,7 @@ struct BeachSearchView: View {
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
     
+    @State private var showBeachDetailsSheet: Bool = false
     @State private var detailsSheetDetentSelection: PresentationDetent = Constants.collapsedDetentFraction
     
     @State private var favoritesSheetIsPresented: Bool = false
@@ -27,21 +28,24 @@ struct BeachSearchView: View {
         @Bindable var beachSearchViewModel = beachSearchViewModel
         
         ZStack {
-            BeachMapView()
-                .allowsHitTesting(!beachSearchViewModel.appState.isSearching)
+            BeachMapView(onTransitionCompletion: {
+                if beachSearchViewModel.appState.isPresentingBeach {
+                    self.showBeachDetailsSheet = true
+                }
+            })
+                .allowsHitTesting(!beachSearchViewModel.isSearching)
                 .overlay {
-                    switch beachSearchViewModel.appState {
-                    case .searchSetup:
-                        searchSetupMapOverlay
-                    case .showSearchResults, .showBeach:
+                    if beachSearchViewModel.appState.isPresentingBeach {
                         showingResultsMapOverlay
+                    } else {
+                        searchSetupMapOverlay
                     }
                 }
         }
         .simpleAlert(isPresented: $beachSearchViewModel.isShowingAlert,
                      titleKey: beachSearchViewModel.alertTitleKey,
                      messageKey: beachSearchViewModel.alertMessageKey)
-        .sheet(isPresented: $beachSearchViewModel.showBeachDetailsSheet) {
+        .sheet(isPresented: $showBeachDetailsSheet) {
             if let currentBeachResult = beachSearchViewModel.appState.currentBeach {
                 BeachResultDetailsView(for: currentBeachResult, collapseSheet: collapseSheet)
                     .presentationDetents([Constants.collapsedDetentFraction, .medium], selection: $detailsSheetDetentSelection)
@@ -74,7 +78,7 @@ struct BeachSearchView: View {
                 Button("aboutButtonTitle") {
                     aboutSheetIsPresented = true
                 }
-                .disabled(beachSearchViewModel.appState.isSearching)
+                .disabled(beachSearchViewModel.isSearching)
                 .buttonStyle(.plain)
                 .font(.caption)
                 .underline()
@@ -113,6 +117,7 @@ struct BeachSearchView: View {
             if #available(iOS 26, *) {
                 Button("newSearchButtonTitle", systemImage: "house") {
                     beachSearchViewModel.newSearch()
+                    showBeachDetailsSheet = false
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.glassProminent)
@@ -120,6 +125,7 @@ struct BeachSearchView: View {
             } else {
                 Button("newSearchButtonTitle", systemImage: "house") {
                     beachSearchViewModel.newSearch()
+                    showBeachDetailsSheet = false
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderedProminent)
@@ -144,9 +150,9 @@ struct BeachSearchView: View {
                     .padding()
             }
             .buttonStyle(.glassProminent)
-            .disabled(beachSearchViewModel.appState.isSearching)
+            .disabled(beachSearchViewModel.isSearching)
             .overlay {
-                if beachSearchViewModel.appState.isSearching {
+                if beachSearchViewModel.isSearching {
                     ProgressView()
                 }
             }
@@ -162,9 +168,9 @@ struct BeachSearchView: View {
                    .padding()
            }
            .buttonStyle(.borderedProminent)
-           .disabled(beachSearchViewModel.appState.isSearching)
+           .disabled(beachSearchViewModel.isSearching)
            .overlay {
-               if beachSearchViewModel.appState.isSearching {
+               if beachSearchViewModel.isSearching {
                    ProgressView()
                }
            }

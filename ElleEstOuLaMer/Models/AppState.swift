@@ -6,17 +6,9 @@
 //
 
 enum AppState: Equatable {
-    case searchSetup(isSearching: Bool)
+    case searchSetup
     case showSearchResults([BeachResult], currentBeachIndex: Int)
     case showBeach(BeachResult)
-    
-    static var readyForSearch: AppState {
-        .searchSetup(isSearching: false)
-    }
-    
-    static var searching: AppState {
-        .searchSetup(isSearching: true)
-    }
     
     public var currentBeach: BeachResult? {
         switch self {
@@ -29,12 +21,12 @@ enum AppState: Equatable {
         }
     }
     
-    public var isSearching: Bool {
+    var isPresentingBeach: Bool {
         switch self {
-        case .searchSetup(let isSearching):
-            isSearching
+        case .showBeach, .showSearchResults:
+            return true
         default:
-            false
+            return false
         }
     }
 }

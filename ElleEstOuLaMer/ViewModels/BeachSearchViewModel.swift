@@ -19,21 +19,12 @@ class BeachSearchViewModel {
     
     private let modelContext: ModelContext
     
-    public var appState: AppState = .searchSetup(isSearching: false) {
-        didSet {
-            switch appState {
-            case .showSearchResults, .showBeach:
-                showBeachDetailsSheet = true
-            default:
-                showBeachDetailsSheet = false
-            }
-        }
-    }
+    public var appState: AppState = .searchSetup
     private(set) var originLocationMode: OriginLocationMode = .user
     
-    private(set) var favorites: [FavoriteBeach] = []
+    private(set) var isSearching = false
     
-    public var showBeachDetailsSheet: Bool = false
+    private(set) var favorites: [FavoriteBeach] = []
     
     public var isShowingAlert: Bool = false
     private(set) var alertTitleKey: LocalizedStringKey = ""
@@ -53,7 +44,7 @@ class BeachSearchViewModel {
     
     // MARK: - Public
     public func newSearch() {
-        appState = .searchSetup(isSearching: false)
+        appState = .searchSetup
     }
     
     public var isUsingCustomOriginLocation: Bool {
@@ -65,10 +56,11 @@ class BeachSearchViewModel {
     }
     
     public func search() async {
-        appState = .searchSetup(isSearching: true)
+        isSearching = true
         
         guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {
-            appState = .searchSetup(isSearching: false)
+            appState = .searchSetup
+            isSearching = false
             return
         }
         
@@ -77,8 +69,10 @@ class BeachSearchViewModel {
         if !nearestBeaches.isEmpty {
             appState = .showSearchResults(nearestBeaches, currentBeachIndex: 0)
         } else {
-            appState = .searchSetup(isSearching: false)
+            appState = .searchSetup
         }
+        
+        isSearching = false
     }
 
     public var canShowNextBeach: Bool {
