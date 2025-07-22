@@ -1,5 +1,5 @@
 //
-//  BeachResultDetailsView.swift
+//  BeachDetailsView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 10/07/2025.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct BeachResultDetailsView: View {
+struct BeachDetailsView: View {
     private struct Constants {
         static let mainSpacing: CGFloat = 30
         static let navigationButtonSpacing: CGFloat = 10
@@ -34,11 +34,11 @@ struct BeachResultDetailsView: View {
     
     let beachResult: BeachResult
     
-    let collapseSheet: () -> Void
+    let collapseDetailsSheet: () -> Void
     
-    init(for beachResult: BeachResult, collapseSheet: @escaping () -> Void) {
+    init(for beachResult: BeachResult, collapseDetailsSheet: @escaping () -> Void) {
         self.beachResult = beachResult
-        self.collapseSheet = collapseSheet
+        self.collapseDetailsSheet = collapseDetailsSheet
     }
     
     var body: some View {
@@ -95,13 +95,13 @@ struct BeachResultDetailsView: View {
     var nextBeachButton: some View {
         Button("nextBeachButtonTitle") {
             beachSearchViewModel.showNextBeachResult()
-            collapseSheet()
+            collapseDetailsSheet()
         }
         .disabled(!beachSearchViewModel.canShowNextBeach)
     }
 }
 
-extension BeachResultDetailsView {
+extension BeachDetailsView {
     func formatDistance(_ distance: CLLocationDistance) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

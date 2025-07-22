@@ -25,7 +25,7 @@ struct ElleEstOuLaMerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            BeachSearchView()
+            MainView()
                 .environment(beachSearchViewModel)
         }
         .modelContainer(container)
