@@ -36,6 +36,22 @@
         }
       }
     },
+    "contactLink" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Contact me](https://mballereau.fr/elle-est-ou-la-mer/en/contact.html)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Me contacter](https://mballereau.fr/elle-est-ou-la-mer/fr/contact.html)"
+          }
+        }
+      }
+    },
     "customSearchOriginMarkerLabel" : {
       "localizations" : {
         "en" : {
@@ -275,6 +291,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ouvrir dans Waze"
+          }
+        }
+      }
+    },
+    "privacyPolicyLink" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Privacy Policy](https://mballereau.fr/elle-est-ou-la-mer/en/privacy.html)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Politique de confidentialité](https://mballereau.fr/elle-est-ou-la-mer/fr/privacy.html)"
           }
         }
       }

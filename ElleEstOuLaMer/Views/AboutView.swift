@@ -19,6 +19,8 @@ struct AboutView: View {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                 Text("developedByMarkBallereauLinkedIn")
                 Text("dataSourceNotice")
+                Text("privacyPolicyLink")
+                Text("contactLink")
                 Spacer()
             }
             .padding()
