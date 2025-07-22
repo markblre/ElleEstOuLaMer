@@ -36,23 +36,6 @@
         }
       }
     },
-    "backToSearchButtonTitle" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Return to search"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retour à l’écran de recherche"
-          }
-        }
-      }
-    },
     "customSearchOriginMarkerLabel" : {
       "localizations" : {
         "en" : {
@@ -229,9 +212,6 @@
         }
       }
     },
-    "newSearchButtonTitle" : {
-
-    },
     "nextBeachButtonTitle" : {
       "localizations" : {
         "en" : {
@@ -311,6 +291,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retour à ma position"
+          }
+        }
+      }
+    },
+    "returnToSearchScreenButtonTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to search screen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour à l’écran de recherche"
           }
         }
       }

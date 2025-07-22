@@ -104,8 +104,14 @@ extension BeachMapView {
     private func updateMapPosition(for originLocationMode: OriginLocationMode) {
         switch originLocationMode {
         case .user:
-            withAnimation {
-                mapPosition = .userLocation(fallback: .automatic)
+            if let lastSearchOriginCoordinate = beachSearchViewModel.lastSearchOriginCoordinate {
+                withAnimation {
+                    mapPosition = .camera(MapCamera(centerCoordinate: lastSearchOriginCoordinate, distance: Constants.userPositionViewDistance))
+                }
+            } else {
+                withAnimation {
+                    mapPosition = .userLocation(fallback: .automatic)
+                }
             }
         case .custom(let customSearchOriginCoordinate):
             withAnimation {

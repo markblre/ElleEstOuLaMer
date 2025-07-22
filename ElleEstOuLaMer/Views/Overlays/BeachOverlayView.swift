@@ -9,31 +9,35 @@ import SwiftUI
 
 struct BeachOverlayView: View {
     
-    private let backToSearch: () -> Void
+    private let returnToSearchScreen : () -> Void
     
-    init(backToSearch: @escaping () -> Void) {
-        self.backToSearch = backToSearch
+    init(returnToSearchScreen: @escaping () -> Void) {
+        self.returnToSearchScreen = returnToSearchScreen
     }
     
     var body: some View {
         VStack {
-            if #available(iOS 26, *) {
-                Button("newSearchButtonTitle", systemImage: "house") {
-                    backToSearch()
-                }
-                .labelStyle(.iconOnly)
-                .buttonStyle(.glassProminent)
-                .font(.title2)
-            } else {
-                Button("newSearchButtonTitle", systemImage: "house") {
-                    backToSearch()
-                }
-                .labelStyle(.iconOnly)
-                .buttonStyle(.borderedProminent)
-                .font(.title2)
-            }
-
+            returnToSearchScreenButton
             Spacer()
+        }
+    }
+    
+    @ViewBuilder
+    var returnToSearchScreenButton: some View {
+        if #available(iOS 26, *) {
+            Button("returnToSearchScreenButtonTitle", systemImage: "house") {
+                returnToSearchScreen()
+            }
+            .labelStyle(.iconOnly)
+            .buttonStyle(.glassProminent)
+            .font(.title2)
+        } else {
+            Button("returnToSearchScreenButtonTitle", systemImage: "house") {
+                returnToSearchScreen()
+            }
+            .labelStyle(.iconOnly)
+            .buttonStyle(.borderedProminent)
+            .font(.title2)
         }
     }
 }

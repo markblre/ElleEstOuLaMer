@@ -22,6 +22,8 @@ class BeachSearchViewModel {
     public var appState: AppState = .searchSetup
     private(set) var originLocationMode: OriginLocationMode = .user
     
+    private(set) var lastSearchOriginCoordinate: CLLocationCoordinate2D?
+    
     private(set) var isSearching = false
     
     private(set) var favorites: [FavoriteBeach] = []
@@ -43,7 +45,7 @@ class BeachSearchViewModel {
     }
     
     // MARK: - Public
-    public func newSearch() {
+    public func returnToSearchScreen() {
         appState = .searchSetup
     }
     
@@ -52,6 +54,7 @@ class BeachSearchViewModel {
     }
     
     public func setOriginLocationMode(to newOriginLocationMode: OriginLocationMode) {
+        lastSearchOriginCoordinate = nil
         originLocationMode = newOriginLocationMode
     }
     
@@ -63,6 +66,8 @@ class BeachSearchViewModel {
             isSearching = false
             return
         }
+        
+        lastSearchOriginCoordinate = searchOriginCoordinate
         
         let nearestBeaches = beachService.searchNearestBeaches(from: searchOriginCoordinate)
         
@@ -119,6 +124,8 @@ class BeachSearchViewModel {
             isSearching = false
             return
         }
+        
+        lastSearchOriginCoordinate = searchOriginCoordinate
         
         let distance = searchOriginCoordinate.distance(from: beach.coordinate)
         

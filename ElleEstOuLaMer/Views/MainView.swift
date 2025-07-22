@@ -33,7 +33,7 @@ struct MainView: View {
             .allowsHitTesting(!beachSearchViewModel.isSearching)
             .overlay {
                 if beachSearchViewModel.appState.isPresentingBeach {
-                    BeachOverlayView(backToSearch: backToSearch)
+                    BeachOverlayView(returnToSearchScreen: returnToSearchScreen)
                 } else {
                     SearchOverlayView(presentAboutSheet: presentAboutSheet, presentFavoritesSheet: presentFavoritesSheet)
                 }
@@ -76,8 +76,8 @@ extension MainView {
         favoritesSheetIsPresented = true
     }
 
-    private func backToSearch() {
-        beachSearchViewModel.newSearch()
+    private func returnToSearchScreen() {
+        beachSearchViewModel.returnToSearchScreen()
         showBeachDetailsSheet = false
     }
 }
