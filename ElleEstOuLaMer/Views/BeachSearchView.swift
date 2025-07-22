@@ -111,14 +111,14 @@ struct BeachSearchView: View {
     var showingResultsMapOverlay: some View {
         VStack {
             if #available(iOS 26, *) {
-                Button("newSearchButtonTitle", systemImage: "arrow.counterclockwise") {
+                Button("newSearchButtonTitle", systemImage: "house") {
                     beachSearchViewModel.newSearch()
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.glassProminent)
                 .font(.title2)
             } else {
-                Button("newSearchButtonTitle", systemImage: "arrow.counterclockwise") {
+                Button("newSearchButtonTitle", systemImage: "house") {
                     beachSearchViewModel.newSearch()
                 }
                 .labelStyle(.iconOnly)
