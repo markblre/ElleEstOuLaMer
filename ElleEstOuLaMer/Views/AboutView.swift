@@ -17,12 +17,12 @@ struct AboutView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                Text("DevelopedByMarkBallereauLinkedIn")
-                Text("DataSourceNotice")
+                Text("developedByMarkBallereauLinkedIn")
+                Text("dataSourceNotice")
                 Spacer()
             }
             .padding()
-            .navigationTitle("AboutTitle")
+            .navigationTitle("aboutTitle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

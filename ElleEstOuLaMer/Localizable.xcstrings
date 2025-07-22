@@ -20,7 +20,7 @@
         }
       }
     },
-    "AboutTitle" : {
+    "aboutTitle" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -52,7 +52,7 @@
         }
       }
     },
-    "DataSourceNotice" : {
+    "dataSourceNotice" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -68,7 +68,7 @@
         }
       }
     },
-    "DevelopedByMarkBallereauLinkedIn" : {
+    "developedByMarkBallereauLinkedIn" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -105,18 +105,18 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No favorites yet."
+            "value" : "Oops, your favorite beach isn’t here yet… How about starting a search?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore de favoris."
+            "value" : "Oups, ta plage préférée n’est pas encore là… Et si tu lançais une recherche ?"
           }
         }
       }
     },
-    "FavoritesTitle" : {
+    "favoritesTitle" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -137,13 +137,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location access was denied. Please enable it in Settings."
+            "value" : "We’d love to take you to the sea, but we don’t know where you are… Please enable location in your settings!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’accès à la localisation a été refusé. Veuillez autoriser l’accès dans les réglages."
+            "value" : "On aurait bien aimé t’emmener à la mer, mais on ne sait pas où tu es… Autorise la localisation dans les réglages !"
           }
         }
       }
@@ -153,13 +153,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location Error"
+            "value" : "We’re paddling hard to find you…"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erreur de localisation"
+            "value" : "On rame pour te localiser…"
           }
         }
       }
@@ -169,13 +169,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to determine your location. Please check your network connection or try again later."
+            "value" : "Can’t locate you due to a network hiccup. Maybe you’re already out at sea?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible d’obtenir votre position. Vérifiez votre connexion réseau ou réessayez plus tard."
+            "value" : "Impossible de te localiser à cause d’un souci réseau. Tu serais pas déjà en pleine mer ?"
           }
         }
       }
@@ -185,13 +185,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An unknown error occurred while determining your location. Please try again."
+            "value" : "Something unexpected happened while locating you. Mind trying again?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une erreur inconnue est survenue lors de la localisation. Veuillez réessayer."
+            "value" : "Un imprévu est arrivé pendant la localisation. Tu veux bien réessayer ?"
           }
         }
       }
@@ -233,13 +233,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show me another beach"
+            "value" : "Show me another beach!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre moi une autre plage"
+            "value" : "Montre moi une autre plage !"
           }
         }
       }
@@ -316,13 +316,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An unexpected error occurred. Please try again."
+            "value" : "Hmm, something didn’t work. Want to try again?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une erreur inattendue est survenue. Veuillez réessayer."
+            "value" : "Hmm, quelque chose n’a pas marché. On retente ?"
           }
         }
       }

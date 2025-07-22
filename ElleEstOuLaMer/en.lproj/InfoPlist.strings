@@ -1,2 +1,2 @@
-"NSLocationWhenInUseUsageDescription" = "Your location is used to find the beach closest to you.";
+"NSLocationWhenInUseUsageDescription" = "To find the closest beach, we need to know where you are. Mind if we take a quick peek?";
 "CFBundleDisplayName" = "Where's the sea";

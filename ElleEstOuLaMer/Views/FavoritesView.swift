@@ -37,7 +37,7 @@ struct FavoritesView: View {
                     }
                 }
             }
-            .navigationTitle("FavoritesTitle")
+            .navigationTitle("favoritesTitle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
