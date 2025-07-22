@@ -114,7 +114,11 @@ class BeachSearchViewModel {
     }
     
     public func selectFavorite(_ beach: Beach) async {
-        guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else { return }
+        isSearching = true
+        guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {
+            isSearching = false
+            return
+        }
         
         let distance = searchOriginCoordinate.distance(from: beach.coordinate)
         
@@ -123,6 +127,7 @@ class BeachSearchViewModel {
                                       searchOriginCoordinate: searchOriginCoordinate)
         
         appState = .showBeach(beachResult)
+        isSearching = false
     }
     
     public func openInAppleMaps(_ beach: Beach) {

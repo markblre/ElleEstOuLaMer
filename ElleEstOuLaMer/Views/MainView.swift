@@ -55,6 +55,7 @@ struct MainView: View {
         }
         .sheet(isPresented: $favoritesSheetIsPresented) {
             FavoritesView()
+                .interactiveDismissDisabled(beachSearchViewModel.isSearching)
         }
         .sheet(isPresented: $aboutSheetIsPresented) {
             AboutView()

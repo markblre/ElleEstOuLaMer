@@ -25,14 +25,23 @@ struct FavoritesView: View {
                     List(beachSearchViewModel.favorites) { favorite in
                         if let beach = beachSearchViewModel.beachDetails(for: favorite.beachID) {
                             Button {
-                                dismiss()
                                 Task {
                                     await beachSearchViewModel.selectFavorite(beach)
+                                    dismiss()
                                 }
                             } label: {
                                 BeachRow(beach: beach)
                             }
                             .buttonStyle(.plain)
+                            .disabled(beachSearchViewModel.isSearching)
+                        }
+                    }
+                    .overlay {
+                        if beachSearchViewModel.isSearching {
+                            ProgressView()
+                                .padding(50)
+                                .background(.secondary.opacity(0.5))
+                                .cornerRadius(16)
                         }
                     }
                 }
@@ -42,6 +51,7 @@ struct FavoritesView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
+                        guard !beachSearchViewModel.isSearching else { return }
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
