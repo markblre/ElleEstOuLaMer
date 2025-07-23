@@ -10,7 +10,22 @@ import MapKit
 
 struct MainView: View {
     private struct Constants {
-        static let detailsSheetCollapsedDetentFraction: PresentationDetent = .fraction(0.1)
+        @MainActor
+        static var detailsSheetCollapsedDetentFraction: PresentationDetent {
+            if #available(iOS 26, *) {
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    .height(65)
+                } else {
+                    .fraction(0.1)
+                }
+            } else {
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    .height(75)
+                } else {
+                    .fraction(0.1)
+                }
+            }
+        }
     }
     
     @Environment(BeachSearchViewModel.self) private var beachSearchViewModel

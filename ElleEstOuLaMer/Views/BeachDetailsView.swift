@@ -10,8 +10,8 @@ import MapKit
 
 struct BeachDetailsView: View {
     private struct Constants {
-        static let mainSpacing: CGFloat = 30
-        static let navigationButtonSpacing: CGFloat = 10
+        static let mainSpacing: CGFloat = 25
+        static let navigationButtonSpacing: CGFloat = 5
         static var topPadding: CGFloat {
             if #available(iOS 26, *) {
                 0
@@ -87,6 +87,8 @@ struct BeachDetailsView: View {
             Text(beachResult.beach.name)
                 .font(.title2)
                 .fontWeight(.bold)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
             Text(beachResult.beach.communeName + " • " + formatDistance(beachResult.distance))
                 .font(.caption)
         }
