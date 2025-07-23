@@ -9,6 +9,7 @@ import MapKit
 
 final class ExternalNavigationService {
     // MARK: - Public
+    @MainActor
     public func openInAppleMaps(_ beach: Beach, withNavigation: Bool) {
         let mapItem = self.createMapItem(for: beach)
         let launchOptions: [String:Any] = withNavigation ? [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault] : [:]
@@ -16,6 +17,7 @@ final class ExternalNavigationService {
         mapItem.openInMaps(launchOptions: launchOptions)
     }
     
+    @MainActor
     public func openInGoogleMaps(_ beach: Beach, withNavigation: Bool) {
         let webUrlString = "https://www.google.com/maps/\(withNavigation ? "dir" : "search")/?api=1&\(withNavigation ? "destination" : "query")=\(beach.latitude),\(beach.longitude)"
         
@@ -24,6 +26,7 @@ final class ExternalNavigationService {
         }
     }
     
+    @MainActor
     public func openInWaze(_ beach: Beach, withNavigation: Bool) {
         let urlScheme = "waze://?ll=\(beach.latitude),\(beach.longitude)&navigate=\(withNavigation ? "yes" : "no")"
         
