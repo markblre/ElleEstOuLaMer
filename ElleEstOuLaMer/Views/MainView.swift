@@ -12,18 +12,10 @@ struct MainView: View {
     private struct Constants {
         @MainActor
         static var detailsSheetCollapsedDetentFraction: PresentationDetent {
-            if #available(iOS 26, *) {
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    .height(65)
-                } else {
-                    .fraction(0.1)
-                }
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                .height(75)
             } else {
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    .height(75)
-                } else {
-                    .fraction(0.1)
-                }
+                .fraction(0.1)
             }
         }
     }
