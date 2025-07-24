@@ -195,12 +195,8 @@ class BeachSearchViewModel {
     }
     
     private func loadFavorites() {
-        do {
-            let descriptor = FetchDescriptor<FavoriteBeach>()
-            favorites = try modelContext.fetch(descriptor)
-        } catch {
-            print("Failed to fetch favorites: \(error)")
-        }
+        let descriptor = FetchDescriptor<FavoriteBeach>()
+        favorites = (try? modelContext.fetch(descriptor)) ?? []
     }
     
     private func showAlert(titleKey: LocalizedStringKey, messageKey: LocalizedStringKey) {
