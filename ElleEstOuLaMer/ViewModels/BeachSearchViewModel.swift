@@ -42,6 +42,7 @@ class BeachSearchViewModel {
         self.navigationService = navigationService
         self.modelContext = modelContext
         loadFavorites()
+        checkUserLocationInSupportedTerritory()
     }
     
     // MARK: - Public
@@ -150,6 +151,18 @@ class BeachSearchViewModel {
     }
     
     // MARK: - Private
+    private func checkUserLocationInSupportedTerritory() {
+        Task {
+            guard let currentCoordinate = try? await locationService.requestCurrentCoordinate() else { return }
+                
+            let isInSupportedTerritory = await locationService.isCoordinateInSupportedTerritory(currentCoordinate)
+            if !isInSupportedTerritory {
+                showAlert(titleKey: "appOnlySupportsFranceTitle",
+                          messageKey: "appOnlySupportsFranceMessage")
+            }
+        }
+    }
+    
     private func resolveSearchOriginCoordinate() async -> CLLocationCoordinate2D? {
         switch originLocationMode {
         case .custom(let coordinate):

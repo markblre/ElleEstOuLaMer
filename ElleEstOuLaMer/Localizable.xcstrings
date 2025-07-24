@@ -36,6 +36,38 @@
         }
       }
     },
+    "appOnlySupportsFranceMessage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For now, the app only lists beaches in France.\nBut you can still drop a pin on the map to take a look around!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour l’instant, l’app ne recense que les plages en France.\nMais tu peux toujours poser un point sur la carte pour aller jeter un œil !"
+          }
+        }
+      }
+    },
+    "appOnlySupportsFranceTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You seem to be outside of France…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu sembles ne pas être en France…"
+          }
+        }
+      }
+    },
     "contactLink" : {
       "localizations" : {
         "en" : {

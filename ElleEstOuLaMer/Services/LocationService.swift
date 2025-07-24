@@ -34,6 +34,22 @@ final class LocationService: NSObject {
             locationManager.requestLocation()
         }
     }
+    
+    @MainActor
+    public func isCoordinateInSupportedTerritory(_ coordinate: CLLocationCoordinate2D) async -> Bool {
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let supportedTerritoryCountryCodes: Set<String> = ["FR", "GF", "GP", "MQ", "RE", "YT"]
+        
+        let placemarks = try? await geocoder.reverseGeocodeLocation(location)
+        if let placemark = placemarks?.first {
+            if let countryCode = placemark.isoCountryCode?.uppercased() {
+                return supportedTerritoryCountryCodes.contains(countryCode)
+            }
+        }
+        
+        return false
+    }
 }
 
 extension LocationService: CLLocationManagerDelegate {
