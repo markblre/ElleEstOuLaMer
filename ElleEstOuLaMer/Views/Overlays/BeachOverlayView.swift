@@ -22,22 +22,12 @@ struct BeachOverlayView: View {
         }
     }
     
-    @ViewBuilder
     var returnToSearchScreenButton: some View {
-        if #available(iOS 26, *) {
-            Button("returnToSearchScreenButtonTitle", systemImage: "house") {
-                returnToSearchScreen()
-            }
-            .labelStyle(.iconOnly)
-            .buttonStyle(.glassProminent)
-            .font(.title2)
-        } else {
-            Button("returnToSearchScreenButtonTitle", systemImage: "house") {
-                returnToSearchScreen()
-            }
-            .labelStyle(.iconOnly)
-            .buttonStyle(.borderedProminent)
-            .font(.title2)
+        Button("returnToSearchScreenButtonTitle", systemImage: "house") {
+            returnToSearchScreen()
         }
+        .labelStyle(.iconOnly)
+        .buttonStyle(.borderedProminent)
+        .font(.title2)
     }
 }

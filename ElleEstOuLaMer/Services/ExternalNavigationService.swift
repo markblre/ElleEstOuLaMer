@@ -40,12 +40,7 @@ final class ExternalNavigationService {
     
     // MARK: - Private
     private func createMapItem(for beach: Beach) -> MKMapItem {
-        let mapItem: MKMapItem
-        if #available(iOS 26.0, *) {
-            mapItem = MKMapItem(location: CLLocation(latitude: beach.latitude, longitude: beach.longitude), address: nil)
-        } else {
-            mapItem = MKMapItem(placemark: MKPlacemark(coordinate: beach.coordinate))
-        }
+        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: beach.coordinate))
         
         mapItem.name = beach.name
         mapItem.pointOfInterestCategory = .beach

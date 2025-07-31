@@ -50,90 +50,45 @@ struct SearchOverlayView: View {
         }
     }
     
-    @ViewBuilder
     var mainButton: some View {
-        if #available(iOS 26, *) {
-            Button(action: {
-                Task {
-                    await beachSearchViewModel.search()
-                }
-            }) {
-                Text("mainButtonTitle")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding()
+        Button(action: {
+            Task {
+                await beachSearchViewModel.search()
             }
-            .buttonStyle(.glassProminent)
-            .disabled(beachSearchViewModel.isSearching)
-            .overlay {
-                if beachSearchViewModel.isSearching {
-                    ProgressView()
-                }
+        }) {
+            Text("mainButtonTitle")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(beachSearchViewModel.isSearching)
+        .overlay {
+            if beachSearchViewModel.isSearching {
+                ProgressView()
             }
-        } else {
-           Button(action: {
-               Task {
-                   await beachSearchViewModel.search()
-               }
-           }) {
-               Text("mainButtonTitle")
-                   .font(.title)
-                   .fontWeight(.bold)
-                   .padding()
-           }
-           .buttonStyle(.borderedProminent)
-           .disabled(beachSearchViewModel.isSearching)
-           .overlay {
-               if beachSearchViewModel.isSearching {
-                   ProgressView()
-               }
-           }
         }
     }
     
-    @ViewBuilder
     var returnToMyLocationButton: some View {
-        if #available(iOS 26, *) {
-            Button(action: {
-                beachSearchViewModel.setOriginLocationMode(to: .user)
-            }) {
-                HStack {
-                    Image(systemName: "location.fill")
-                    Text("returnToMyLocationButtonTitle")
-                        .font(.body)
-                }
-            }
-            .buttonStyle(.glassProminent)
-        } else {
-           Button(action: {
-               beachSearchViewModel.setOriginLocationMode(to: .user)
-           }) {
-               HStack {
-                   Image(systemName: "location.fill")
-                   Text("returnToMyLocationButtonTitle")
-                       .font(.body)
-               }
+       Button(action: {
+           beachSearchViewModel.setOriginLocationMode(to: .user)
+       }) {
+           HStack {
+               Image(systemName: "location.fill")
+               Text("returnToMyLocationButtonTitle")
+                   .font(.body)
            }
-           .buttonStyle(.borderedProminent)
-        }
+       }
+       .buttonStyle(.borderedProminent)
     }
     
-    @ViewBuilder
     var favoritesButton: some View {
-        if #available(iOS 26, *) {
-            Button("favoritesButtonTitle", systemImage: "star.fill") {
-                presentFavoritesSheet()
-            }
-            .labelStyle(.iconOnly)
-            .buttonStyle(.glassProminent)
-            .font(.title2)
-        } else {
-            Button("favoritesButtonTitle", systemImage: "star.fill") {
-                presentFavoritesSheet()
-            }
-            .labelStyle(.iconOnly)
-            .buttonStyle(.borderedProminent)
-            .font(.title2)
+        Button("favoritesButtonTitle", systemImage: "star.fill") {
+            presentFavoritesSheet()
         }
+        .labelStyle(.iconOnly)
+        .buttonStyle(.borderedProminent)
+        .font(.title2)
     }
 }

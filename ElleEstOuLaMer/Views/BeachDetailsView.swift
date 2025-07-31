@@ -12,20 +12,8 @@ struct BeachDetailsView: View {
     private struct Constants {
         static let mainSpacing: CGFloat = 25
         static let navigationButtonSpacing: CGFloat = 5
-        static var topPadding: CGFloat {
-            if #available(iOS 26, *) {
-                0
-            } else {
-                10
-            }
-        }
-        static var bottomPadding: CGFloat {
-            if #available(iOS 26, *) {
-                0
-            } else {
-                16
-            }
-        }
+        static let topPadding: CGFloat = 10
+        static let bottomPadding: CGFloat = 16
         static let meterToKilometerThreshold: CLLocationDistance = 1000
         static let kilometerDecimalThreshold: CLLocationDistance = 10_000
     }
