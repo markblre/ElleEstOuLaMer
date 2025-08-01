@@ -1,5 +1,5 @@
 //
-//  BeachOverlayView.swift
+//  ResultOverlayView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 22/07/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BeachOverlayView: View {
+struct ResultOverlayView: View {
     
     private let returnToSearchScreen : () -> Void
     

@@ -1,5 +1,5 @@
 //
-//  SearchOverlayView.swift
+//  SearchSetupOverlayView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 22/07/2025.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct SearchOverlayView: View {
+struct SearchSetupOverlayView: View {
     private struct Constants {
         static let bottomPaddingMainButton: CGFloat = 15
         static let aboutButtonOpacity: Double = 0.6
         static let bottomPaddingAboutButton: CGFloat = 10
     }
     
-    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    @Environment(SearchViewModel.self) private var searchViewModel
     
     private let presentAboutSheet: () -> Void
     private let presentFavoritesSheet: () -> Void
@@ -28,7 +28,7 @@ struct SearchOverlayView: View {
         VStack {
             favoritesButton
             Spacer()
-            if beachSearchViewModel.isUsingCustomOriginLocation {
+            if searchViewModel.isUsingCustomOriginLocation {
                 returnToMyLocationButton
             }
             mainButton
@@ -38,7 +38,7 @@ struct SearchOverlayView: View {
                 Button("aboutButtonTitle") {
                     presentAboutSheet()
                 }
-                .disabled(beachSearchViewModel.isSearching)
+                .disabled(searchViewModel.isSearching)
                 .buttonStyle(.plain)
                 .font(.caption)
                 .underline()
@@ -53,7 +53,7 @@ struct SearchOverlayView: View {
     var mainButton: some View {
         Button(action: {
             Task {
-                await beachSearchViewModel.search()
+                await searchViewModel.search()
             }
         }) {
             Text("mainButtonTitle")
@@ -62,9 +62,9 @@ struct SearchOverlayView: View {
                 .padding()
         }
         .buttonStyle(.borderedProminent)
-        .disabled(beachSearchViewModel.isSearching)
+        .disabled(searchViewModel.isSearching)
         .overlay {
-            if beachSearchViewModel.isSearching {
+            if searchViewModel.isSearching {
                 ProgressView()
             }
         }
@@ -72,7 +72,7 @@ struct SearchOverlayView: View {
     
     var returnToMyLocationButton: some View {
        Button(action: {
-           beachSearchViewModel.setOriginLocationMode(to: .user)
+           searchViewModel.setOriginLocationMode(to: .user)
        }) {
            HStack {
                Image(systemName: "location.fill")

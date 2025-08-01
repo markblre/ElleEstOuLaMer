@@ -1,5 +1,5 @@
 //
-//  BeachSearchViewModel.swift
+//  SearchViewModel.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 08/07/2025.
@@ -11,10 +11,10 @@ import SwiftData
 
 @MainActor
 @Observable
-class BeachSearchViewModel {
+class SearchViewModel {
     // MARK: - Properties
     private let locationService: LocationService
-    private let beachService: BeachService
+    private let bathingSiteService: BathingSiteService
     private let navigationService: ExternalNavigationService
     
     private let modelContext: ModelContext
@@ -26,7 +26,7 @@ class BeachSearchViewModel {
     
     private(set) var isSearching = false
     
-    private(set) var favorites: [FavoriteBeach] = []
+    private(set) var favorites: [FavoriteBathingSite] = []
     
     public var isShowingAlert: Bool = false
     private(set) var alertTitleKey: LocalizedStringKey = ""
@@ -34,11 +34,11 @@ class BeachSearchViewModel {
     
     // MARK: - Init
     init(locationService: LocationService = LocationService(),
-         beachService: BeachService = BeachService(),
+         bathingSiteService: BathingSiteService = BathingSiteService(),
          navigationService: ExternalNavigationService = ExternalNavigationService(),
          modelContext: ModelContext) {
         self.locationService = locationService
-        self.beachService = beachService
+        self.bathingSiteService = bathingSiteService
         self.navigationService = navigationService
         self.modelContext = modelContext
         loadFavorites()
@@ -70,10 +70,10 @@ class BeachSearchViewModel {
         
         lastSearchOriginCoordinate = searchOriginCoordinate
         
-        let nearestBeaches = beachService.searchNearestBeaches(from: searchOriginCoordinate)
+        let results = bathingSiteService.searchNearestBathingSites(from: searchOriginCoordinate)
         
-        if !nearestBeaches.isEmpty {
-            appState = .showSearchResults(nearestBeaches, currentBeachIndex: 0)
+        if !results.isEmpty {
+            appState = .showSearchResults(results)
         } else {
             appState = .searchSetup
         }
@@ -81,45 +81,45 @@ class BeachSearchViewModel {
         isSearching = false
     }
 
-    public var canShowNextBeach: Bool {
+    public var canShowNextSite: Bool {
         switch appState {
-        case .showSearchResults(let nearestBeaches, let currentBeachIndex):
-            return currentBeachIndex < nearestBeaches.count - 1
+        case .showSearchResults(let results, let selectedIndex):
+            return selectedIndex < results.count - 1
         default:
             return false
         }
     }
     
-    public func showNextBeachResult() {
+    public func showNextSite() {
         switch appState {
-        case .showSearchResults(let nearestBeaches, let currentBeachIndex):
-            guard canShowNextBeach else { return }
-            appState = .showSearchResults(nearestBeaches, currentBeachIndex: currentBeachIndex + 1)
+        case .showSearchResults(let results, let selectedIndex):
+            guard canShowNextSite else { return }
+            appState = .showSearchResults(results, selectedIndex: selectedIndex + 1)
         default:
             return
         }
     }
     
-    public func beachDetails(for beachID: String) -> Beach? {
-        beachService.beachDetails(for: beachID)
+    public func bathingSiteDetails(for id: String) -> BathingSite? {
+        bathingSiteService.bathingSiteDetails(for: id)
     }
     
-    public func isFavorite(beach: Beach) -> Bool {
-        favorites.contains(where: { $0.beachID == beach.id })
+    public func isFavorite(bathingSite: BathingSite) -> Bool {
+        favorites.contains(where: { $0.bathingSiteID == bathingSite.id })
     }
     
-    public func toggleFavorite(for beach: Beach) {
-        if let existing = favorites.first(where: { $0.beachID == beach.id }) {
+    public func toggleFavorite(for bathingSite: BathingSite) {
+        if let existing = favorites.first(where: { $0.bathingSiteID == bathingSite.id }) {
             modelContext.delete(existing)
         } else {
-            let newFavorite = FavoriteBeach(beachID: beach.id)
+            let newFavorite = FavoriteBathingSite(bathingSiteID: bathingSite.id)
             modelContext.insert(newFavorite)
         }
 
         loadFavorites()
     }
     
-    public func selectFavorite(_ beach: Beach) async {
+    public func show(_ bathingSite: BathingSite) async {
         isSearching = true
         guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {
             isSearching = false
@@ -128,26 +128,26 @@ class BeachSearchViewModel {
         
         lastSearchOriginCoordinate = searchOriginCoordinate
         
-        let distance = searchOriginCoordinate.distance(from: beach.coordinate)
+        let distance = searchOriginCoordinate.distance(from: bathingSite.coordinate)
         
-        let beachResult = BeachResult(beach: beach,
-                                      distance: distance,
-                                      searchOriginCoordinate: searchOriginCoordinate)
+        let result = SearchResult(site: bathingSite,
+                                  distance: distance,
+                                  searchOriginCoordinate: searchOriginCoordinate)
         
-        appState = .showBeach(beachResult)
+        appState = .showSearchResult(result)
         isSearching = false
     }
     
-    public func openInAppleMaps(_ beach: Beach) {
-        navigationService.openInAppleMaps(beach, withNavigation: !isUsingCustomOriginLocation)
+    public func openInAppleMaps(_ bathingSite: BathingSite) {
+        navigationService.openInAppleMaps(bathingSite, withNavigation: !isUsingCustomOriginLocation)
     }
     
-    public func openInGoogleMaps(_ beach: Beach) {
-        navigationService.openInGoogleMaps(beach, withNavigation: !isUsingCustomOriginLocation)
+    public func openInGoogleMaps(_ bathingSite: BathingSite) {
+        navigationService.openInGoogleMaps(bathingSite, withNavigation: !isUsingCustomOriginLocation)
     }
     
-    public func openInWaze(_ beach: Beach) {
-        navigationService.openInWaze(beach, withNavigation: !isUsingCustomOriginLocation)
+    public func openInWaze(_ bathingSite: BathingSite) {
+        navigationService.openInWaze(bathingSite, withNavigation: !isUsingCustomOriginLocation)
     }
     
     // MARK: - Private
@@ -195,7 +195,7 @@ class BeachSearchViewModel {
     }
     
     private func loadFavorites() {
-        let descriptor = FetchDescriptor<FavoriteBeach>()
+        let descriptor = FetchDescriptor<FavoriteBathingSite>()
         favorites = (try? modelContext.fetch(descriptor)) ?? []
     }
     

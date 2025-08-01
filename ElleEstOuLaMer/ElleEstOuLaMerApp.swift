@@ -11,22 +11,22 @@ import SwiftData
 @main
 struct ElleEstOuLaMerApp: App {
     let container: ModelContainer
-    @State private var beachSearchViewModel: BeachSearchViewModel
+    @State private var searchViewModel: SearchViewModel
     
     init() {
             do {
-                container = try ModelContainer(for: FavoriteBeach.self)
+                container = try ModelContainer(for: FavoriteBathingSite.self)
             } catch {
                 fatalError("Failed to create ModelContainer.")
             }
 
-            _beachSearchViewModel = State(initialValue: BeachSearchViewModel(modelContext: container.mainContext))
+            _searchViewModel = State(initialValue: SearchViewModel(modelContext: container.mainContext))
         }
     
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environment(beachSearchViewModel)
+                .environment(searchViewModel)
         }
         .modelContainer(container)
     }

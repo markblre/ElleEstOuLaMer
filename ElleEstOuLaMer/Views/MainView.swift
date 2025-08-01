@@ -20,38 +20,38 @@ struct MainView: View {
         }
     }
     
-    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    @Environment(SearchViewModel.self) private var searchViewModel
     
-    @State private var showBeachDetailsSheet: Bool = false
+    @State private var showSearchResultDetailsSheet: Bool = false
     @State private var detailsSheetDetentSelection: PresentationDetent = Constants.detailsSheetCollapsedDetentFraction
     
     @State private var favoritesSheetIsPresented: Bool = false
     @State private var aboutSheetIsPresented: Bool = false
     
     var body: some View {
-        @Bindable var beachSearchViewModel = beachSearchViewModel
+        @Bindable var searchViewModel = searchViewModel
         
         ZStack {
-            BeachMapView(onTransitionCompletion: {
-                if beachSearchViewModel.appState.isPresentingBeach {
-                    self.showBeachDetailsSheet = true
+            SearchMapView(onTransitionCompletion: {
+                if searchViewModel.appState.isPresentingResult {
+                    self.showSearchResultDetailsSheet = true
                 }
             })
-            .allowsHitTesting(!beachSearchViewModel.isSearching)
+            .allowsHitTesting(!searchViewModel.isSearching)
             .overlay {
-                if beachSearchViewModel.appState.isPresentingBeach {
-                    BeachOverlayView(returnToSearchScreen: returnToSearchScreen)
+                if searchViewModel.appState.isPresentingResult {
+                    ResultOverlayView(returnToSearchScreen: returnToSearchScreen)
                 } else {
-                    SearchOverlayView(presentAboutSheet: presentAboutSheet, presentFavoritesSheet: presentFavoritesSheet)
+                    SearchSetupOverlayView(presentAboutSheet: presentAboutSheet, presentFavoritesSheet: presentFavoritesSheet)
                 }
             }
         }
-        .simpleAlert(isPresented: $beachSearchViewModel.isShowingAlert,
-                     titleKey: beachSearchViewModel.alertTitleKey,
-                     messageKey: beachSearchViewModel.alertMessageKey)
-        .sheet(isPresented: $showBeachDetailsSheet) {
-            if let currentBeachResult = beachSearchViewModel.appState.currentBeach {
-                BeachDetailsView(for: currentBeachResult, collapseDetailsSheet: collapseDetailsSheet)
+        .simpleAlert(isPresented: $searchViewModel.isShowingAlert,
+                     titleKey: searchViewModel.alertTitleKey,
+                     messageKey: searchViewModel.alertMessageKey)
+        .sheet(isPresented: $showSearchResultDetailsSheet) {
+            if let currentResult = searchViewModel.appState.currentResult {
+                SearchResultDetailsView(for: currentResult, collapseDetailsSheet: collapseDetailsSheet)
                     .presentationDetents([Constants.detailsSheetCollapsedDetentFraction, .medium], selection: $detailsSheetDetentSelection)
                     .presentationBackgroundInteraction(.enabled(upThrough: .medium))
                     .interactiveDismissDisabled(true)
@@ -62,7 +62,7 @@ struct MainView: View {
         }
         .sheet(isPresented: $favoritesSheetIsPresented) {
             FavoritesView()
-                .interactiveDismissDisabled(beachSearchViewModel.isSearching)
+                .interactiveDismissDisabled(searchViewModel.isSearching)
         }
         .sheet(isPresented: $aboutSheetIsPresented) {
             AboutView()
@@ -84,7 +84,7 @@ extension MainView {
     }
 
     private func returnToSearchScreen() {
-        beachSearchViewModel.returnToSearchScreen()
-        showBeachDetailsSheet = false
+        searchViewModel.returnToSearchScreen()
+        showSearchResultDetailsSheet = false
     }
 }

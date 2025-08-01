@@ -8,36 +8,36 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    @Environment(SearchViewModel.self) private var searchViewModel
     
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationStack {
             Group {
-                if beachSearchViewModel.favorites.isEmpty {
+                if searchViewModel.favorites.isEmpty {
                     Text("favoritesEmptyMessage")
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .italic()
                         .padding(.horizontal, 50)
                 } else {
-                    List(beachSearchViewModel.favorites) { favorite in
-                        if let beach = beachSearchViewModel.beachDetails(for: favorite.beachID) {
+                    List(searchViewModel.favorites) { favorite in
+                        if let site = searchViewModel.bathingSiteDetails(for: favorite.bathingSiteID) {
                             Button {
                                 Task {
-                                    await beachSearchViewModel.selectFavorite(beach)
+                                    await searchViewModel.show(site)
                                     dismiss()
                                 }
                             } label: {
-                                BeachRow(beach: beach)
+                                FavoriteRow(site: site)
                             }
                             .buttonStyle(.plain)
-                            .disabled(beachSearchViewModel.isSearching)
+                            .disabled(searchViewModel.isSearching)
                         }
                     }
                     .overlay {
-                        if beachSearchViewModel.isSearching {
+                        if searchViewModel.isSearching {
                             ProgressView()
                                 .padding(50)
                                 .background(.secondary.opacity(0.5))
@@ -51,7 +51,7 @@ struct FavoritesView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        guard !beachSearchViewModel.isSearching else { return }
+                        guard !searchViewModel.isSearching else { return }
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
@@ -62,15 +62,15 @@ struct FavoritesView: View {
     }
 }
 
-struct BeachRow: View {
-    let beach: Beach
+struct FavoriteRow: View {
+    let site: BathingSite
 
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(beach.name)
+                Text(site.name)
                     .font(.headline)
-                Text(beach.communeName)
+                Text(site.municipality)
                     .font(.subheadline)
                     .foregroundStyle(.gray)
             }

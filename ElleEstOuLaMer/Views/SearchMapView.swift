@@ -1,5 +1,5 @@
 //
-//  BeachMapView.swift
+//  SearchMapView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 15/07/2025.
@@ -8,20 +8,20 @@
 import SwiftUI
 import MapKit
 
-struct BeachMapView: View {
+struct SearchMapView: View {
     private struct Constants {
-        static let beachViewDistance: CLLocationDistance = 12_000
+        static let bathingSiteViewDistance: CLLocationDistance = 12_000
         static let userPositionViewDistance: CLLocationDistance = 5_500
         static let firstTransitionDistanceThreshold: Double = 5_000
         static let nextTransitionDistanceThreshold: Double = 50_000
         static let cameraDistanceMultiplier: Double = 10.0
     }
     
-    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    @Environment(SearchViewModel.self) private var searchViewModel
     
     @State private var mapPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     
-    @State private var previousBeachCoordinate: CLLocationCoordinate2D?
+    @State private var previousSiteCoordinate: CLLocationCoordinate2D?
     
     @State private var pendingCameraTransition: (() -> Void)?
     
@@ -36,8 +36,8 @@ struct BeachMapView: View {
     var body: some View {
         MapReader { proxy in
             Map(position: $mapPosition) {
-                currentBeachMarker
-                if beachSearchViewModel.isUsingCustomOriginLocation {
+                currentSiteMarker
+                if searchViewModel.isUsingCustomOriginLocation {
                     customSearchOriginMarker
                 } else {
                     UserAnnotation()
@@ -53,14 +53,14 @@ struct BeachMapView: View {
                 pendingCameraTransition?()
                 pendingCameraTransition = nil
             }
-            .onChange(of: beachSearchViewModel.appState) { updateMapPosition(for: beachSearchViewModel.appState) }
-            .onChange(of: beachSearchViewModel.originLocationMode) { updateMapPosition(for: beachSearchViewModel.originLocationMode) }
+            .onChange(of: searchViewModel.appState) { updateMapPosition(for: searchViewModel.appState) }
+            .onChange(of: searchViewModel.originLocationMode) { updateMapPosition(for: searchViewModel.originLocationMode) }
             .gesture(
                 SpatialTapGesture()
                     .onEnded { value in
-                        guard case .searchSetup = beachSearchViewModel.appState else { return }
+                        guard case .searchSetup = searchViewModel.appState else { return }
                         if let customSearchOriginCoordinate = proxy.convert(value.location, from: .local) {
-                            beachSearchViewModel.setOriginLocationMode(to: .custom(customSearchOriginCoordinate))
+                            searchViewModel.setOriginLocationMode(to: .custom(customSearchOriginCoordinate))
                         }
                 }
             )
@@ -68,43 +68,43 @@ struct BeachMapView: View {
     }
     
     @MapContentBuilder
-    var currentBeachMarker: some MapContent {
-        if let currentBeach = beachSearchViewModel.appState.currentBeach?.beach {
-            Marker(currentBeach.name, systemImage: "beach.umbrella.fill", coordinate: currentBeach.coordinate)
+    var currentSiteMarker: some MapContent {
+        if let currentResult = searchViewModel.appState.currentResult {
+            Marker(currentResult.site.name, systemImage: "beach.umbrella.fill", coordinate: currentResult.site.coordinate)
                 .tint(.cyan)
         }
     }
     
     @MapContentBuilder
     var customSearchOriginMarker: some MapContent {
-        if case .custom(let customSearchOriginCoordinate) = beachSearchViewModel.originLocationMode {
+        if case .custom(let customSearchOriginCoordinate) = searchViewModel.originLocationMode {
             Marker("customSearchOriginMarkerLabel", systemImage: "person.fill", coordinate: customSearchOriginCoordinate)
                 .tint(.red)
         }
     }
 }
 
-extension BeachMapView {
+extension SearchMapView {
     private func updateMapPosition(for appState: AppState) {
         switch appState {
         case .searchSetup:
-            updateMapPosition(for: beachSearchViewModel.originLocationMode)
-            previousBeachCoordinate = nil
-        case .showSearchResults, .showBeach:
-            guard let currentBeach = appState.currentBeach else { return }
+            updateMapPosition(for: searchViewModel.originLocationMode)
+            previousSiteCoordinate = nil
+        case .showSearchResult, .showSearchResults:
+            guard let currentResult = appState.currentResult else { return }
             
-            performMapTransitionIfNeeded(from: previousBeachCoordinate ?? currentBeach.searchOriginCoordinate,
-                                         to: currentBeach,
-                                         isFirstBeach: previousBeachCoordinate == nil)
+            performMapTransitionIfNeeded(from: previousSiteCoordinate ?? currentResult.searchOriginCoordinate,
+                                         to: currentResult,
+                                         isFirstResult: previousSiteCoordinate == nil)
             
-            previousBeachCoordinate = currentBeach.beach.coordinate
+            previousSiteCoordinate = currentResult.site.coordinate
         }
     }
     
     private func updateMapPosition(for originLocationMode: OriginLocationMode) {
         switch originLocationMode {
         case .user:
-            if let lastSearchOriginCoordinate = beachSearchViewModel.lastSearchOriginCoordinate {
+            if let lastSearchOriginCoordinate = searchViewModel.lastSearchOriginCoordinate {
                 withAnimation {
                     mapPosition = .camera(MapCamera(centerCoordinate: lastSearchOriginCoordinate, distance: Constants.userPositionViewDistance))
                 }
@@ -120,20 +120,20 @@ extension BeachMapView {
         }
     }
     
-    private func shouldPlaySkyTransition(transitionDistance: Double, isFirstBeach: Bool) -> Bool {
-        let threshold = isFirstBeach ? Constants.firstTransitionDistanceThreshold : Constants.nextTransitionDistanceThreshold
+    private func shouldPlaySkyTransition(transitionDistance: Double, isFirstResult: Bool) -> Bool {
+        let threshold = isFirstResult ? Constants.firstTransitionDistanceThreshold : Constants.nextTransitionDistanceThreshold
         return transitionDistance > threshold
     }
     
-    private func performMapTransitionIfNeeded(from startCoordinate: CLLocationCoordinate2D, to destination: BeachResult, isFirstBeach: Bool) {
+    private func performMapTransitionIfNeeded(from startCoordinate: CLLocationCoordinate2D, to destination: SearchResult, isFirstResult: Bool) {
         let searchOriginCoordinate = destination.searchOriginCoordinate
-        let destinationCoordinate = destination.beach.coordinate
+        let destinationCoordinate = destination.site.coordinate
         
         let transitionDistance = startCoordinate.distance(from: destinationCoordinate)
         
-        guard shouldPlaySkyTransition(transitionDistance: transitionDistance, isFirstBeach: isFirstBeach) else {
+        guard shouldPlaySkyTransition(transitionDistance: transitionDistance, isFirstResult: isFirstResult) else {
             withAnimation {
-                mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.beachViewDistance))
+                mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.bathingSiteViewDistance))
             }
             performTransitionCompletion = true
             return
@@ -141,17 +141,16 @@ extension BeachMapView {
         
         let transitionMidpointCoordinate = searchOriginCoordinate.midpoint(with: destinationCoordinate)
         
-        let searchOriginToBeachDistance = searchOriginCoordinate.distance(from: destinationCoordinate)
-        let zoomedOutCameraDistance: Double = searchOriginToBeachDistance * Constants.cameraDistanceMultiplier
+        let zoomedOutCameraDistance: Double = destination.distance * Constants.cameraDistanceMultiplier
         
         withAnimation {
             mapPosition = .camera(MapCamera(centerCoordinate: transitionMidpointCoordinate, distance: zoomedOutCameraDistance))
         }
         
         pendingCameraTransition = {
-            if beachSearchViewModel.appState.isPresentingBeach {
+            if searchViewModel.appState.isPresentingResult {
                 withAnimation {
-                    mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.beachViewDistance))
+                    mapPosition = .camera(MapCamera(centerCoordinate: destinationCoordinate, distance: Constants.bathingSiteViewDistance))
                 }
                 performTransitionCompletion = true
             }

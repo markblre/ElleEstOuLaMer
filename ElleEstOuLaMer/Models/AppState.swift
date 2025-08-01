@@ -7,23 +7,23 @@
 
 enum AppState: Equatable {
     case searchSetup
-    case showSearchResults([BeachResult], currentBeachIndex: Int)
-    case showBeach(BeachResult)
+    case showSearchResults([SearchResult], selectedIndex: Int = 0)
+    case showSearchResult(SearchResult)
     
-    public var currentBeach: BeachResult? {
+    public var currentResult: SearchResult? {
         switch self {
-        case .showSearchResults(let beaches, let index):
-            return beaches[safe: index]
-        case .showBeach(let beach):
-            return beach
+        case .showSearchResults(let results, let index):
+            return results[safe: index]
+        case .showSearchResult(let result):
+            return result
         default:
             return nil
         }
     }
     
-    var isPresentingBeach: Bool {
+    var isPresentingResult: Bool {
         switch self {
-        case .showBeach, .showSearchResults:
+        case .showSearchResults, .showSearchResult:
             return true
         default:
             return false

@@ -41,13 +41,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "For now, the app only lists beaches in France.\nBut you can still drop a pin on the map to take a look around!"
+            "value" : "For now, you can only explore bathing spots in France. But you can still drop a pin on the map to take a look around!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour l’instant, l’app ne recense que les plages en France.\nMais tu peux toujours poser un point sur la carte pour aller jeter un œil !"
+            "value" : "Pour l’instant, l’app ne recense que les baignades en France.\nMais tu peux toujours poser un point sur la carte pour aller jeter un œil !"
           }
         }
       }
@@ -153,13 +153,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oops, your favorite beach isn’t here yet… How about starting a search?"
+            "value" : "Oops, your favorite spot’s not here yet… Wanna start a search?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oups, ta plage préférée n’est pas encore là… Et si tu lançais une recherche ?"
+            "value" : "Oups, ton coin de paradis préféré n’est pas encore là… Et si tu lançais une recherche ?"
           }
         }
       }
@@ -260,18 +260,18 @@
         }
       }
     },
-    "nextBeachButtonTitle" : {
+    "nextSiteButtonTitle" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show me another beach!"
+            "value" : "Show me another spot!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre moi une autre plage !"
+            "value" : "Propose-moi un autre spot !"
           }
         }
       }

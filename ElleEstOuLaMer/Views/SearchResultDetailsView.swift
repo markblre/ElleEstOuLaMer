@@ -1,5 +1,5 @@
 //
-//  BeachDetailsView.swift
+//  SearchResultDetailsView.swift
 //  ElleEstOuLaMer
 //
 //  Created by Mark Ballereau on 10/07/2025.
@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct BeachDetailsView: View {
+struct SearchResultDetailsView: View {
     private struct Constants {
         static let mainSpacing: CGFloat = 25
         static let navigationButtonSpacing: CGFloat = 5
@@ -18,14 +18,14 @@ struct BeachDetailsView: View {
         static let kilometerDecimalThreshold: CLLocationDistance = 10_000
     }
     
-    @Environment(BeachSearchViewModel.self) private var beachSearchViewModel
+    @Environment(SearchViewModel.self) private var searchViewModel
     
-    let beachResult: BeachResult
+    let result: SearchResult
     
     let collapseDetailsSheet: () -> Void
     
-    init(for beachResult: BeachResult, collapseDetailsSheet: @escaping () -> Void) {
-        self.beachResult = beachResult
+    init(for result: SearchResult, collapseDetailsSheet: @escaping () -> Void) {
+        self.result = result
         self.collapseDetailsSheet = collapseDetailsSheet
     }
     
@@ -35,17 +35,17 @@ struct BeachDetailsView: View {
                 VStack(spacing: Constants.mainSpacing) {
                     VStack(spacing: Constants.navigationButtonSpacing) {
                         MapOpenButton(title: "openInAppleMaps") {
-                            beachSearchViewModel.openInAppleMaps(beachResult.beach)
+                            searchViewModel.openInAppleMaps(result.site)
                         }
                         MapOpenButton(title: "openInGoogleMaps") {
-                            beachSearchViewModel.openInGoogleMaps(beachResult.beach)
+                            searchViewModel.openInGoogleMaps(result.site)
                         }
                         MapOpenButton(title: "openInWaze") {
-                            beachSearchViewModel.openInWaze(beachResult.beach)
+                            searchViewModel.openInWaze(result.site)
                         }
                     }
-                    if case .showSearchResults = beachSearchViewModel.appState {
-                        nextBeachButton
+                    if case .showSearchResults = searchViewModel.appState {
+                        nextSiteButton
                     }
                 }
                 .padding()
@@ -58,9 +58,9 @@ struct BeachDetailsView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        beachSearchViewModel.toggleFavorite(for: beachResult.beach)
+                        searchViewModel.toggleFavorite(for: result.site)
                     } label: {
-                        Image(systemName: beachSearchViewModel.isFavorite(beach: beachResult.beach) ? "star.fill" : "star")
+                        Image(systemName: searchViewModel.isFavorite(bathingSite: result.site) ? "star.fill" : "star")
                     }
                 }
             }
@@ -72,26 +72,26 @@ struct BeachDetailsView: View {
     @ViewBuilder
     var header: some View {
         VStack {
-            Text(beachResult.beach.name)
+            Text(result.site.name)
                 .font(.title2)
                 .fontWeight(.bold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(beachResult.beach.communeName + " • " + formatDistance(beachResult.distance))
+            Text(result.site.municipality + " • " + formatDistance(result.distance))
                 .font(.caption)
         }
     }
     
-    var nextBeachButton: some View {
-        Button("nextBeachButtonTitle") {
-            beachSearchViewModel.showNextBeachResult()
+    var nextSiteButton: some View {
+        Button("nextSiteButtonTitle") {
+            searchViewModel.showNextSite()
             collapseDetailsSheet()
         }
-        .disabled(!beachSearchViewModel.canShowNextBeach)
+        .disabled(!searchViewModel.canShowNextSite)
     }
 }
 
-extension BeachDetailsView {
+extension SearchResultDetailsView {
     func formatDistance(_ distance: CLLocationDistance) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
