@@ -25,12 +25,19 @@ struct SearchSetupOverlayView: View {
     }
     
     var body: some View {
+        @Bindable var searchViewModel = searchViewModel
+        
         VStack {
             favoritesButton
             Spacer()
-            if searchViewModel.isUsingCustomOriginLocation {
-                returnToMyLocationButton
+            HStack {
+                Spacer()
+                SearchModeSelector(selectedMode: $searchViewModel.searchMode)
+                    .padding(.trailing)
             }
+            Spacer()
+            returnToMyLocationButton
+                .opacity(searchViewModel.isUsingCustomOriginLocation ? 1 : 0)
             mainButton
                 .padding(.bottom, Constants.bottomPaddingMainButton)
             HStack {

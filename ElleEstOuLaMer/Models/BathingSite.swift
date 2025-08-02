@@ -7,9 +7,17 @@
 
 import CoreLocation
 
+enum WaterType: String, Decodable, CaseIterable {
+    case lake = "Lac"
+    case river = "Rivière"
+    case coastalWater = "Eau côtière"
+    case transitionalWater = "Eau de transition"
+}
+
 struct BathingSite: Identifiable, Decodable, Equatable {
     let id: String
     let name: String
+    let waterType: WaterType
     let region: String
     let department: String
     let municipality: String
@@ -18,14 +26,15 @@ struct BathingSite: Identifiable, Decodable, Equatable {
     let longitude: Double
     
     enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case name = "name"
-        case region = "region"
-        case department = "departement"
-        case municipality = "communeName"
-        case municipalityCode = "communeINSEE"
-        case latitude = "latitude"
-        case longitude = "longitude"
+        case id = "Code unique d'identification du site de baignade"
+        case name = "Nom du site de baignade"
+        case waterType = "Type d'eau"
+        case region = "Région"
+        case department = "Département"
+        case municipality = "Nom de la commune"
+        case municipalityCode = "Code INSEE de la commune"
+        case latitude = "Latitude (ETRS 89)"
+        case longitude = "Longitude (ETRS 89)"
     }
     
     var coordinate: CLLocationCoordinate2D {

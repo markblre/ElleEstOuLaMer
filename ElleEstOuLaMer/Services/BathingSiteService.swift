@@ -12,7 +12,7 @@ struct BathingSiteService {
     public let allBathingSites: [BathingSite]
     
     init() {
-        if let url = Bundle.main.url(forResource: "beaches-france-2024", withExtension: "json"),
+        if let url = Bundle.main.url(forResource: "baignades-france-2024", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let bathingSites = try? JSONDecoder().decode([BathingSite].self, from: data) {
             self.allBathingSites = bathingSites
@@ -25,8 +25,11 @@ struct BathingSiteService {
         return allBathingSites.first { $0.id == bathingSiteID }
     }
     
-    public func searchNearestBathingSites(from searchOriginCoordinate: CLLocationCoordinate2D, limit maxCount: Int = 5) -> [SearchResult] {
-        let results = allBathingSites.map { bathingSite in
+    public func searchNearestBathingSites(from searchOriginCoordinate: CLLocationCoordinate2D,
+                                          only acceptedWaterTypes: [WaterType] = WaterType.allCases,
+                                          limit maxCount: Int = 5) -> [SearchResult] {
+        let filteredSites = allBathingSites.filter { acceptedWaterTypes.contains($0.waterType) }
+        let results = filteredSites.map { bathingSite in
             SearchResult(site: bathingSite,
                          distance: searchOriginCoordinate.distance(from: bathingSite.coordinate),
                          searchOriginCoordinate: searchOriginCoordinate)

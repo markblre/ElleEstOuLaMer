@@ -21,6 +21,7 @@ class SearchViewModel {
     
     public var appState: AppState = .searchSetup
     private(set) var originLocationMode: OriginLocationMode = .user
+    public var searchMode: SearchMode = .all
     
     private(set) var lastSearchOriginCoordinate: CLLocationCoordinate2D?
     
@@ -70,7 +71,7 @@ class SearchViewModel {
         
         lastSearchOriginCoordinate = searchOriginCoordinate
         
-        let results = bathingSiteService.searchNearestBathingSites(from: searchOriginCoordinate)
+        let results = bathingSiteService.searchNearestBathingSites(from: searchOriginCoordinate, only: searchMode.acceptedWaterTypes)
         
         if !results.isEmpty {
             appState = .showSearchResults(results)
