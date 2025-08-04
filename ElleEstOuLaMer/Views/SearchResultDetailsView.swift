@@ -8,6 +8,17 @@
 import SwiftUI
 import MapKit
 
+private extension WaterType {
+    var symbolName: String {
+        switch self {
+        case .lake, .river:
+            return "leaf.fill"
+        case .transitionalWater, .coastalWater:
+            return "beach.umbrella.fill"
+        }
+    }
+}
+
 struct SearchResultDetailsView: View {
     private struct Constants {
         static let mainSpacing: CGFloat = 25
@@ -53,6 +64,10 @@ struct SearchResultDetailsView: View {
             .scrollDisabled(true)
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image(systemName: result.site.waterType.symbolName)
+                        .font(.title3)
+                }
                 ToolbarItem(placement: .principal) {
                     header
                 }
