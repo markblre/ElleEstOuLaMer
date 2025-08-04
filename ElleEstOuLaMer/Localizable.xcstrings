@@ -185,13 +185,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We’d love to take you to the sea, but we don’t know where you are… Please enable location in your settings!"
+            "value" : "We would have loved to take you swimming, but we don’t know where you are… Please enable location access in your settings!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On aurait bien aimé t’emmener à la mer, mais on ne sait pas où tu es… Autorise la localisation dans les réglages !"
+            "value" : "On aurait bien aimé t’emmener te baigner, mais on ne sait pas où tu es… Autorise la localisation dans les réglages !"
           }
         }
       }
