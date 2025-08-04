@@ -28,10 +28,24 @@ final class LocationService: NSObject {
     }
     
     @MainActor
-    public func requestCurrentCoordinate() async throws -> CLLocationCoordinate2D? {
+    public func requestCurrentCoordinate(timeout locationTimeoutSeconds: TimeInterval = 5) async throws -> CLLocationCoordinate2D? {
+        if let location = locationManager.location {
+            return location.coordinate
+        }
+
         return try await withCheckedThrowingContinuation { continuation in
             self.locationContinuation = continuation
             locationManager.requestLocation()
+            
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: UInt64(locationTimeoutSeconds * 1_000_000_000))
+                guard let self = self else { return }
+                
+                if let locationContinuation {
+                    locationContinuation.resume(throwing: CLError(.locationUnknown))
+                    self.locationContinuation = nil
+                }
+            }
         }
     }
     
@@ -46,6 +60,9 @@ final class LocationService: NSObject {
             if let countryCode = placemark.isoCountryCode?.uppercased() {
                 return supportedTerritoryCountryCodes.contains(countryCode)
             }
+        }
+        else {
+            return true
         }
         
         return false
