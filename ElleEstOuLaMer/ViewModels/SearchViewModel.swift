@@ -120,6 +120,13 @@ class SearchViewModel {
         loadFavorites()
     }
     
+    public func removeFavorites(_ favoritesToRemove: [FavoriteBathingSite]) {
+        for favorite in favoritesToRemove {
+            modelContext.delete(favorite)
+        }
+        loadFavorites()
+    }
+    
     public func show(_ bathingSite: BathingSite) async {
         isSearching = true
         guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {

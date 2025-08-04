@@ -22,19 +22,22 @@ struct FavoritesView: View {
                         .italic()
                         .padding(.horizontal, 50)
                 } else {
-                    List(searchViewModel.favorites) { favorite in
-                        if let site = searchViewModel.bathingSiteDetails(for: favorite.bathingSiteID) {
-                            Button {
-                                Task {
-                                    await searchViewModel.show(site)
-                                    dismiss()
+                    List {
+                        ForEach(searchViewModel.favorites) { favorite in
+                            if let site = searchViewModel.bathingSiteDetails(for: favorite.bathingSiteID) {
+                                Button {
+                                    Task {
+                                        await searchViewModel.show(site)
+                                        dismiss()
+                                    }
+                                } label: {
+                                    FavoriteRow(site: site)
                                 }
-                            } label: {
-                                FavoriteRow(site: site)
+                                .buttonStyle(.plain)
+                                .disabled(searchViewModel.isSearching)
                             }
-                            .buttonStyle(.plain)
-                            .disabled(searchViewModel.isSearching)
                         }
+                        .onDelete(perform: deleteFavorites)
                     }
                     .overlay {
                         if searchViewModel.isSearching {
@@ -67,6 +70,9 @@ struct FavoriteRow: View {
 
     var body: some View {
         HStack {
+            Image(systemName: site.waterType.symbolName)
+                .padding(.trailing)
+                .font(.title2)
             VStack(alignment: .leading) {
                 Text(site.name)
                     .font(.headline)
@@ -79,5 +85,14 @@ struct FavoriteRow: View {
         }
         .padding(.vertical, 8)
         .contentShape(Rectangle())
+    }
+}
+
+extension FavoritesView {
+    private func deleteFavorites(at offsets: IndexSet) {
+        let favoritesToRemove = offsets.compactMap { index in
+            searchViewModel.favorites.indices.contains(index) ? searchViewModel.favorites[index] : nil
+        }
+        searchViewModel.removeFavorites(favoritesToRemove)
     }
 }
