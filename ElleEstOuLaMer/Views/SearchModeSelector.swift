@@ -51,7 +51,6 @@ struct SearchModeSelector: View {
         static let sliderMaxOffset: CGFloat = 35
         static let coastalSymbol: String = "beach.umbrella.fill"
         static let freshwaterSymbol: String = "leaf.fill"
-        static let selectedSymbolScale: CGFloat = 1.5
         static let symbolsSpacing: CGFloat = 15
         static let cursorColor: Color = .white
         static let sliderCornerRadius: CGFloat = 15
@@ -60,6 +59,8 @@ struct SearchModeSelector: View {
     }
     
     @Binding var selectedMode: SearchMode
+    
+    let generator = UISelectionFeedbackGenerator()
 
     var body: some View {
         HStack {
@@ -97,20 +98,20 @@ struct SearchModeSelector: View {
         let highlightedMode = SearchMode.closest(to: selectedMode.cursorOffset + dragState.offset)
         VStack(alignment: .trailing, spacing: Constants.symbolsSpacing) {
             Image(systemName: Constants.coastalSymbol)
-                .scaleEffect(highlightedMode == .coastal ? Constants.selectedSymbolScale : 1)
-                .foregroundStyle(highlightedMode == .coastal ? .primary : .secondary)
+                .highlightedSymbol(isHighlighted: highlightedMode == .coastal)
             Image(systemName: Constants.freshwaterSymbol)
-                .scaleEffect(highlightedMode == .freshwater ? Constants.selectedSymbolScale : 1)
-                .foregroundStyle(highlightedMode == .freshwater ? .primary : .secondary)
+                .highlightedSymbol(isHighlighted: highlightedMode == .freshwater)
             HStack(spacing: .zero) {
                 Image(systemName: Constants.coastalSymbol)
                 Image(systemName: Constants.freshwaterSymbol)
             }
-            .scaleEffect(highlightedMode == .all ? Constants.selectedSymbolScale : 1)
-            .foregroundStyle(highlightedMode == .all ? .primary : .secondary)
+            .highlightedSymbol(isHighlighted: highlightedMode == .all)
         }
         .font(.callout)
         .animation(.default.speed(2), value: highlightedMode)
+        .onChange(of: highlightedMode) {
+            generator.selectionChanged()
+        }
     }
     
     @GestureState private var dragState: DragState = .idle
