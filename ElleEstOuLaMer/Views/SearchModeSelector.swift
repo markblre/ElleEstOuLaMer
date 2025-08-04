@@ -26,7 +26,7 @@ enum DragState {
     }
 }
 
-extension SearchMode {
+private extension SearchMode {
     var cursorOffset: CGFloat {
         switch self {
         case .coastal: return -35
@@ -40,6 +40,21 @@ extension SearchMode {
             abs($0.cursorOffset - offset) < abs($1.cursorOffset - offset)
         })!
     }
+    
+    @ViewBuilder
+    var symbolView: some View {
+        switch self {
+        case .coastal:
+            Image(systemName: "beach.umbrella.fill")
+        case .freshwater:
+            Image(systemName: "leaf.fill")
+        case .all:
+            HStack(spacing: .zero) {
+                Image(systemName: "beach.umbrella.fill")
+                Image(systemName: "leaf.fill")
+            }
+        }
+    }
 }
 
 struct SearchModeSelector: View {
@@ -49,8 +64,6 @@ struct SearchModeSelector: View {
         static let dragScale: CGFloat = 1.2
         static let sliderMinOffset: CGFloat = -35
         static let sliderMaxOffset: CGFloat = 35
-        static let coastalSymbol: String = "beach.umbrella.fill"
-        static let freshwaterSymbol: String = "leaf.fill"
         static let symbolsSpacing: CGFloat = 15
         static let cursorColor: Color = .white
         static let sliderCornerRadius: CGFloat = 15
@@ -97,15 +110,12 @@ struct SearchModeSelector: View {
     private var symbolsStack: some View {
         let highlightedMode = SearchMode.closest(to: selectedMode.cursorOffset + dragState.offset)
         VStack(alignment: .trailing, spacing: Constants.symbolsSpacing) {
-            Image(systemName: Constants.coastalSymbol)
+            SearchMode.coastal.symbolView
                 .highlightedSymbol(isHighlighted: highlightedMode == .coastal)
-            Image(systemName: Constants.freshwaterSymbol)
+            SearchMode.freshwater.symbolView
                 .highlightedSymbol(isHighlighted: highlightedMode == .freshwater)
-            HStack(spacing: .zero) {
-                Image(systemName: Constants.coastalSymbol)
-                Image(systemName: Constants.freshwaterSymbol)
-            }
-            .highlightedSymbol(isHighlighted: highlightedMode == .all)
+            SearchMode.all.symbolView
+                .highlightedSymbol(isHighlighted: highlightedMode == .all)
         }
         .font(.callout)
         .animation(.default.speed(2), value: highlightedMode)
