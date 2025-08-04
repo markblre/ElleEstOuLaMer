@@ -22,6 +22,8 @@ struct AboutView: View {
                 Text("privacyPolicyLink")
                 Text("contactLink")
                 Spacer()
+                Text("acknowledgments")
+                    .font(.footnote)
             }
             .padding()
             .navigationTitle("aboutTitle")

@@ -36,6 +36,22 @@
         }
       }
     },
+    "acknowledgments" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanks to Pascal D. for the idea and the app name ;)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci à Pascal D. pour l’idée et le nom de l’app ;)"
+          }
+        }
+      }
+    },
     "appOnlySupportsFranceMessage" : {
       "localizations" : {
         "en" : {
