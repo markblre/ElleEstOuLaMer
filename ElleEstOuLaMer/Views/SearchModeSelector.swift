@@ -41,18 +41,11 @@ private extension SearchMode {
         })!
     }
     
-    @ViewBuilder
-    var symbolView: some View {
+    var symbolNames: [String] {
         switch self {
-        case .coastal:
-            Image(systemName: "beach.umbrella.fill")
-        case .freshwater:
-            Image(systemName: "leaf.fill")
-        case .all:
-            HStack(spacing: .zero) {
-                Image(systemName: "beach.umbrella.fill")
-                Image(systemName: "leaf.fill")
-            }
+        case .coastal: return ["beach.umbrella.fill"]
+        case .freshwater: return ["leaf.fill"]
+        case .all: return ["beach.umbrella.fill", "leaf.fill"]
         }
     }
 }
@@ -73,6 +66,8 @@ struct SearchModeSelector: View {
     
     @Binding var selectedMode: SearchMode
     
+    @State var scaleFactor: CGFloat = 1
+    
     let generator = UISelectionFeedbackGenerator()
 
     var body: some View {
@@ -80,8 +75,12 @@ struct SearchModeSelector: View {
             symbolsStack
             slider
         }
-        .scaleEffect(dragState.isDragging ? Constants.dragScale : 1)
-        .animation(.default.speed(2), value: dragState.isDragging)
+        .scaleEffect(scaleFactor, anchor: .trailing)
+        .onChange(of: dragState.isDragging) { _, isDragging in
+            withAnimation() {
+                scaleFactor = isDragging ? Constants.dragScale : 1
+            }
+        }
     }
     
     private var slider: some View {
@@ -93,7 +92,9 @@ struct SearchModeSelector: View {
                 cursor
             }
             .onTapGesture {
-                selectedMode = selectedMode.next
+                withAnimation(.smooth) {
+                    selectedMode = selectedMode.next
+                }
             }
     }
     
@@ -102,7 +103,6 @@ struct SearchModeSelector: View {
             .fill(Constants.cursorColor)
             .padding(Constants.cursorPadding)
             .offset(y: selectedMode.cursorOffset + dragState.offset)
-            .animation(.smooth, value: selectedMode)
             .gesture(dragCursorGesture)
     }
     
@@ -110,18 +110,28 @@ struct SearchModeSelector: View {
     private var symbolsStack: some View {
         let highlightedMode = SearchMode.closest(to: selectedMode.cursorOffset + dragState.offset)
         VStack(alignment: .trailing, spacing: Constants.symbolsSpacing) {
-            SearchMode.coastal.symbolView
-                .highlightedSymbol(isHighlighted: highlightedMode == .coastal)
-            SearchMode.freshwater.symbolView
-                .highlightedSymbol(isHighlighted: highlightedMode == .freshwater)
-            SearchMode.all.symbolView
-                .highlightedSymbol(isHighlighted: highlightedMode == .all)
+            searchModeSymbolView(for: .coastal, showTitle: dragState.isDragging, isHighlighted: highlightedMode == .coastal)
+            searchModeSymbolView(for: .freshwater, showTitle: dragState.isDragging, isHighlighted: highlightedMode == .freshwater)
+            searchModeSymbolView(for: .all, showTitle: dragState.isDragging, isHighlighted: highlightedMode == .all)
         }
         .font(.callout)
-        .animation(.default.speed(2), value: highlightedMode)
         .onChange(of: highlightedMode) {
             generator.selectionChanged()
         }
+    }
+    
+    func searchModeSymbolView(for searchMode: SearchMode, showTitle: Bool, isHighlighted: Bool) -> some View {
+        HStack(spacing: .zero) {
+            if showTitle {
+                Text(LocalizedStringKey(searchMode.rawValue))
+                    .font(.headline)
+                    .padding(.trailing, 5)
+            }
+            ForEach(searchMode.symbolNames, id: \.self) { symbol in
+                Image(systemName: symbol)
+            }
+        }
+        .highlightedSymbol(isHighlighted: isHighlighted)
     }
     
     @GestureState private var dragState: DragState = .idle

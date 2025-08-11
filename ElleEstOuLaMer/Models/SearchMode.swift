@@ -5,10 +5,10 @@
 //  Created by Mark Ballereau on 02/08/2025.
 //
 
-enum SearchMode: CaseIterable {
-    case coastal
-    case freshwater
-    case all
+enum SearchMode: String, CaseIterable {
+    case coastal = "searchModeCoastal"
+    case freshwater = "searchModeFreshwater"
+    case all = "searchModeAll"
     
     var next: SearchMode {
         let allCases = Self.allCases

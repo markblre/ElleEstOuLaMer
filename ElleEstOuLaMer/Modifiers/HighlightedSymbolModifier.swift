@@ -14,8 +14,9 @@ struct HighlightedSymbolModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .scaleEffect(isHighlighted ? scale : 1)
+            .scaleEffect(isHighlighted ? scale : 1, anchor: .trailing)
             .foregroundStyle(isHighlighted ? .primary : .secondary)
+            .animation(.default.speed(2), value: isHighlighted)
     }
 }
 
