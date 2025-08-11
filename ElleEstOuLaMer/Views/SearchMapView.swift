@@ -55,15 +55,12 @@ struct SearchMapView: View {
             }
             .onChange(of: searchViewModel.appState) { updateMapPosition(for: searchViewModel.appState) }
             .onChange(of: searchViewModel.originLocationMode) { updateMapPosition(for: searchViewModel.originLocationMode) }
-            .gesture(
-                SpatialTapGesture()
-                    .onEnded { value in
-                        guard case .searchSetup = searchViewModel.appState else { return }
-                        if let customSearchOriginCoordinate = proxy.convert(value.location, from: .local) {
-                            searchViewModel.setOriginLocationMode(to: .custom(customSearchOriginCoordinate))
-                        }
+            .onTapGesture { location in
+                guard case .searchSetup = searchViewModel.appState else { return }
+                if let customSearchOriginCoordinate = proxy.convert(location, from: .local) {
+                    searchViewModel.setOriginLocationMode(to: .custom(customSearchOriginCoordinate))
                 }
-            )
+            }
         }
     }
     
