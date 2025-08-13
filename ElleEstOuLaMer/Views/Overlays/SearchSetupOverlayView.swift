@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct SearchSetupOverlayView: View {
     private struct Constants {
@@ -16,43 +17,57 @@ struct SearchSetupOverlayView: View {
     
     @Environment(SearchViewModel.self) private var searchViewModel
     
+    @Binding var onboardingTips: TipGroup
+    
     private let presentAboutSheet: () -> Void
     private let presentFavoritesSheet: () -> Void
     
-    init(presentAboutSheet: @escaping () -> Void, presentFavoritesSheet: @escaping () -> Void) {
-        self.presentAboutSheet = presentAboutSheet
-        self.presentFavoritesSheet = presentFavoritesSheet
-    }
+    init(onboardingTips: Binding<TipGroup>, presentAboutSheet: @escaping () -> Void, presentFavoritesSheet: @escaping () -> Void) {
+            self._onboardingTips = onboardingTips
+            self.presentAboutSheet = presentAboutSheet
+            self.presentFavoritesSheet = presentFavoritesSheet
+        }
     
     var body: some View {
         @Bindable var searchViewModel = searchViewModel
-        
-        VStack {
-            favoritesButton
-            Spacer()
-            HStack {
-                Spacer()
-                SearchModeSelector(selectedMode: $searchViewModel.searchMode)
-                    .padding(.trailing)
-            }
-            Spacer()
-            returnToMyLocationButton
-                .opacity(searchViewModel.isUsingCustomOriginLocation ? 1 : 0)
-            mainButton
-                .padding(.bottom, Constants.bottomPaddingMainButton)
-            HStack {
-                Spacer()
-                Button("aboutButtonTitle") {
-                    presentAboutSheet()
+        ZStack {
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                        .frame(height: geo.size.height * 0.35)
+                    HStack {
+                        Spacer()
+                        SearchModeSelector(onboardingTips: $onboardingTips,
+                                           selectedMode: $searchViewModel.searchMode)
+                            .padding(.trailing)
+                    }
+                    Spacer()
                 }
-                .disabled(searchViewModel.isSearching)
-                .buttonStyle(.plain)
-                .font(.caption)
-                .underline()
-                .foregroundColor(.primary)
-                .opacity(Constants.aboutButtonOpacity)
-                .padding(.trailing)
-                .padding(.bottom, Constants.bottomPaddingAboutButton)
+            }
+            VStack {
+                favoritesButton
+                Spacer()
+                TipView(onboardingTips.currentTip as? CustomLocationTip)
+                    .padding()
+                if searchViewModel.isUsingCustomOriginLocation {
+                    returnToMyLocationButton
+                }
+                mainButton
+                    .padding(.bottom, Constants.bottomPaddingMainButton)
+                HStack {
+                    Spacer()
+                    Button("aboutButtonTitle") {
+                        presentAboutSheet()
+                    }
+                    .disabled(searchViewModel.isSearching)
+                    .buttonStyle(.plain)
+                    .font(.caption)
+                    .underline()
+                    .foregroundColor(.primary)
+                    .opacity(Constants.aboutButtonOpacity)
+                    .padding(.trailing)
+                    .padding(.bottom, Constants.bottomPaddingAboutButton)
+                }
             }
         }
     }

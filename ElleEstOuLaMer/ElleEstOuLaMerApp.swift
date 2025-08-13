@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 @main
 struct ElleEstOuLaMerApp: App {
@@ -21,6 +22,13 @@ struct ElleEstOuLaMerApp: App {
             }
 
             _searchViewModel = State(initialValue: SearchViewModel(modelContext: container.mainContext))
+        
+            do {
+                try Tips.configure()
+            }
+            catch {
+                print("Error initializing TipKit \(error.localizedDescription)")
+            }
         }
     
     var body: some Scene {

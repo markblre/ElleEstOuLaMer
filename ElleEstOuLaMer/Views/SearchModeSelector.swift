@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 enum DragState {
     case idle
@@ -63,6 +64,8 @@ struct SearchModeSelector: View {
         static let sliderShadowRadius: CGFloat = 15
         static let cursorPadding: CGFloat = 3
     }
+
+    @Binding var onboardingTips: TipGroup
     
     @Binding var selectedMode: SearchMode
     
@@ -81,6 +84,8 @@ struct SearchModeSelector: View {
                 scaleFactor = isDragging ? Constants.dragScale : 1
             }
         }
+        .popoverTip(onboardingTips.currentTip as? SearchModeSelectorTapTip)
+        .popoverTip(onboardingTips.currentTip as? SearchModeSelectorDragTip)
     }
     
     private var slider: some View {
@@ -93,6 +98,7 @@ struct SearchModeSelector: View {
             }
             .onTapGesture {
                 withAnimation(.smooth) {
+                    SearchModeSelectorTapTip().invalidate(reason: .actionPerformed)
                     selectedMode = selectedMode.next
                 }
             }
@@ -143,6 +149,7 @@ struct SearchModeSelector: View {
                 state = .dragging(offset: clampedOffset - selectedMode.cursorOffset)
             }
             .onEnded { value in
+                SearchModeSelectorDragTip().invalidate(reason: .actionPerformed)
                 let clampedOffset = clampedCursorOffset(for: value.translation.height)
                 selectedMode = SearchMode.closest(to: clampedOffset)
             }
@@ -156,5 +163,13 @@ struct SearchModeSelector: View {
 
 #Preview {
     @Previewable @State var searchMode: SearchMode = .coastal
-    SearchModeSelector(selectedMode: $searchMode)
+    @Previewable @State
+    var onboardingTips = TipGroup(.ordered) {
+        SearchModeSelectorDragTip()
+        SearchModeSelectorTapTip()
+        CustomLocationTip()
+    }
+    
+    SearchModeSelector(onboardingTips: $onboardingTips,
+                       selectedMode: $searchMode)
 }

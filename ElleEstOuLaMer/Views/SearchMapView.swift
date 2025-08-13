@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import TipKit
 
 struct SearchMapView: View {
     private struct Constants {
@@ -58,6 +59,7 @@ struct SearchMapView: View {
             .onTapGesture { location in
                 guard case .searchSetup = searchViewModel.appState else { return }
                 if let customSearchOriginCoordinate = proxy.convert(location, from: .local) {
+                    CustomLocationTip().invalidate(reason: .actionPerformed)
                     searchViewModel.setOriginLocationMode(to: .custom(customSearchOriginCoordinate))
                 }
             }

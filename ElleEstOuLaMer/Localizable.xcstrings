@@ -442,6 +442,102 @@
         }
       }
     },
+    "tipCustomLocationMessage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the map to set your custom location."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche la carte pour définir une position personnalisée."
+          }
+        }
+      }
+    },
+    "tipCustomLocationTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom location"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position personnalisée"
+          }
+        }
+      }
+    },
+    "tipSearchModeDragMessage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drag the slider to select your search mode."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fais glisser le curseur pour choisir un mode de recherche."
+          }
+        }
+      }
+    },
+    "tipSearchModeDragTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick your mode"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer de mode"
+          }
+        }
+      }
+    },
+    "tipSearchModeTapMessage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the slider to switch search modes in a flash."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche le curseur pour changer rapidement de mode de recherche."
+          }
+        }
+      }
+    },
+    "tipSearchModeTapTitle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accès rapide"
+          }
+        }
+      }
+    },
     "unknownErrorMessage" : {
       "localizations" : {
         "en" : {

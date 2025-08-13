@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import TipKit
 
 struct MainView: View {
     private struct Constants {
@@ -21,6 +22,13 @@ struct MainView: View {
     }
     
     @Environment(SearchViewModel.self) private var searchViewModel
+    
+    @State
+    var onboardingTips = TipGroup(.ordered) {
+        SearchModeSelectorDragTip()
+        SearchModeSelectorTapTip()
+        CustomLocationTip()
+    }
     
     @State private var showSearchResultDetailsSheet: Bool = false
     @State private var detailsSheetDetentSelection: PresentationDetent = Constants.detailsSheetCollapsedDetentFraction
@@ -42,7 +50,7 @@ struct MainView: View {
                 if searchViewModel.appState.isPresentingResult {
                     ResultOverlayView(returnToSearchScreen: returnToSearchScreen)
                 } else {
-                    SearchSetupOverlayView(presentAboutSheet: presentAboutSheet, presentFavoritesSheet: presentFavoritesSheet)
+                    SearchSetupOverlayView(onboardingTips: $onboardingTips, presentAboutSheet: presentAboutSheet, presentFavoritesSheet: presentFavoritesSheet)
                 }
             }
         }
