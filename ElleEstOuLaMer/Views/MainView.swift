@@ -19,6 +19,14 @@ struct MainView: View {
                 .fraction(0.1)
             }
         }
+        @MainActor
+        static var detailsSheetOpenDetentFraction: PresentationDetent {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                .height(500)
+            } else {
+                .medium
+            }
+        }
     }
     
     @Environment(SearchViewModel.self) private var searchViewModel
@@ -60,8 +68,8 @@ struct MainView: View {
         .sheet(isPresented: $showSearchResultDetailsSheet) {
             if let currentResult = searchViewModel.appState.currentResult {
                 SearchResultDetailsView(for: currentResult, collapseDetailsSheet: collapseDetailsSheet)
-                    .presentationDetents([Constants.detailsSheetCollapsedDetentFraction, .medium], selection: $detailsSheetDetentSelection)
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                    .presentationDetents([Constants.detailsSheetCollapsedDetentFraction, Constants.detailsSheetOpenDetentFraction], selection: $detailsSheetDetentSelection)
+                    .presentationBackgroundInteraction(.enabled)
                     .interactiveDismissDisabled(true)
                     .onAppear {
                         collapseDetailsSheet()

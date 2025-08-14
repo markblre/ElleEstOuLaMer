@@ -10,7 +10,7 @@ import MapKit
 
 struct SearchResultDetailsView: View {
     private struct Constants {
-        static let mainSpacing: CGFloat = 25
+        static let mainSpacing: CGFloat = 15
         static let navigationButtonSpacing: CGFloat = 5
         static let topPadding: CGFloat = 10
         static let bottomPadding: CGFloat = 16
@@ -33,6 +33,7 @@ struct SearchResultDetailsView: View {
         NavigationStack {
             ScrollView() {
                 VStack(spacing: Constants.mainSpacing) {
+                    StatusBanner(for: result.site.status)
                     VStack(spacing: Constants.navigationButtonSpacing) {
                         MapOpenButton(title: "openInAppleMaps") {
                             searchViewModel.openInAppleMaps(result.site)
@@ -83,8 +84,13 @@ struct SearchResultDetailsView: View {
                 .fontWeight(.bold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(result.site.municipality + " • " + formatDistance(result.distance))
-                .font(.caption)
+            if let municipality = result.site.municipality {
+                Text(municipality + " • " + formatDistance(result.distance))
+                    .font(.caption)
+            } else {
+                Text(formatDistance(result.distance))
+                    .font(.caption)
+            }
         }
     }
     
@@ -136,5 +142,46 @@ struct MapOpenButton: View {
                 .frame(maxWidth: .infinity, minHeight: Constants.mapOpenButtonHeight)
         }
         .buttonStyle(.borderedProminent)
+    }
+}
+
+struct StatusBanner: View {
+    private struct Constants {
+        static let textColor: Color = .white
+        static let deletedBackgroundColor: Color = .red.opacity(0.7)
+        static let newBackgroundColor: Color = .green.opacity(0.8)
+        static let cornerRadius: CGFloat = 10
+    }
+    
+    let status: SiteStatus
+    
+    init(for status: SiteStatus) {
+        self.status = status
+    }
+    
+    var body: some View {
+        var bannerText: LocalizedStringKey? {
+            switch status {
+            case .deleted:
+                "siteDeleted2025"
+            case .new:
+                "newBathingSite2025"
+            case .reopened:
+                "siteReopened2025"
+            default:
+                nil
+            }
+        }
+        
+        if let bannerText {
+            Text(bannerText)
+                .font(.headline)
+                .foregroundColor(Constants.textColor)
+                .bold()
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(status == .deleted ? Constants.deletedBackgroundColor : Constants.newBackgroundColor)
+                .cornerRadius(Constants.cornerRadius)
+        }
     }
 }

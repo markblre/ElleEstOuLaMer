@@ -76,9 +76,17 @@ struct FavoriteRow: View {
             VStack(alignment: .leading) {
                 Text(site.name)
                     .font(.headline)
-                Text(site.municipality)
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
+                if let municipality = site.municipality {
+                    Text(municipality)
+                        .font(.subheadline)
+                        .foregroundStyle(.gray)
+                } else {
+                    if site.status == .deleted {
+                        Text("siteDeleted2025")
+                            .font(.subheadline)
+                            .foregroundStyle(.red)
+                    }
+                }
             }
             Spacer()
             Image(systemName: "chevron.forward")

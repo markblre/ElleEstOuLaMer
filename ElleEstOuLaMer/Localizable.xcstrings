@@ -276,6 +276,23 @@
         }
       }
     },
+    "newBathingSite2025" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New bathing site 2025!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveau site de baignade 2025 !"
+          }
+        }
+      }
+    },
     "nextSiteButtonTitle" : {
       "localizations" : {
         "en" : {
@@ -438,6 +455,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lac / Rivière"
+          }
+        }
+      }
+    },
+    "siteDeleted2025" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bathing site deleted in 2025."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Site de baignade supprimé en 2025."
+          }
+        }
+      }
+    },
+    "siteReopened2025" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bathing site reopened in 2025!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Site de retour en 2025 !"
           }
         }
       }

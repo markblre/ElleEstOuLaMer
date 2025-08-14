@@ -14,14 +14,24 @@ enum WaterType: String, Decodable, CaseIterable {
     case transitionalWater = "Eau de transition"
 }
 
+enum SiteStatus: String, Decodable {
+    case unchanged = "Pas de changement"
+    case new = "Site de baignade nouvellement identifié"
+    case deleted = "Site de baignade supprimé"
+    case reopened = "Site de baignade rouvert"
+    case minorChange = "Changement mineur"
+    
+}
+
 struct BathingSite: Identifiable, Decodable, Equatable {
     let id: String
     let name: String
     let waterType: WaterType
+    let status: SiteStatus
     let region: String
     let department: String
-    let municipality: String
-    let municipalityCode: String
+    let municipality: String?
+    let municipalityCode: String?
     let latitude: Double
     let longitude: Double
     
@@ -29,6 +39,7 @@ struct BathingSite: Identifiable, Decodable, Equatable {
         case id = "Code unique d'identification du site de baignade"
         case name = "Nom du site de baignade"
         case waterType = "Type d'eau"
+        case status = "Evolution 2025 vs. 2024"
         case region = "Région"
         case department = "Département"
         case municipality = "Nom de la commune"
