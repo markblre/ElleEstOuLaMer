@@ -63,9 +63,12 @@ class SearchViewModel {
     public func search() async {
         isSearching = true
         
+        defer {
+            isSearching = false
+        }
+        
         guard let searchOriginCoordinate = await resolveSearchOriginCoordinate() else {
             appState = .searchSetup
-            isSearching = false
             return
         }
         
@@ -78,8 +81,6 @@ class SearchViewModel {
         } else {
             appState = .searchSetup
         }
-        
-        isSearching = false
     }
 
     public var canShowNextSite: Bool {

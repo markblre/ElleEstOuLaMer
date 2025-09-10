@@ -36,6 +36,5 @@ struct ElleEstOuLaMerApp: App {
             MainView()
                 .environment(searchViewModel)
         }
-        .modelContainer(container)
     }
 }
