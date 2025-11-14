@@ -27,7 +27,7 @@ struct ResultOverlayView: View {
             returnToSearchScreen()
         }
         .labelStyle(.iconOnly)
-        .buttonStyle(.borderedProminent)
+        .prominentButtonStyle()
         .font(.title2)
     }
 }

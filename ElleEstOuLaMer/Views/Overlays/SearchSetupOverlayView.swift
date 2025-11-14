@@ -83,7 +83,7 @@ struct SearchSetupOverlayView: View {
                 .fontWeight(.bold)
                 .padding()
         }
-        .buttonStyle(.borderedProminent)
+        .prominentButtonStyle()
         .disabled(searchViewModel.isSearching)
         .overlay {
             if searchViewModel.isSearching {
@@ -102,7 +102,7 @@ struct SearchSetupOverlayView: View {
                    .font(.body)
            }
        }
-       .buttonStyle(.borderedProminent)
+       .prominentButtonStyle()
     }
     
     var favoritesButton: some View {
@@ -110,7 +110,7 @@ struct SearchSetupOverlayView: View {
             presentFavoritesSheet()
         }
         .labelStyle(.iconOnly)
-        .buttonStyle(.borderedProminent)
+        .prominentButtonStyle()
         .font(.title2)
     }
 }
