@@ -11,7 +11,7 @@ final class ExternalNavigationService {
     // MARK: - Public
     @MainActor
     public func openInAppleMaps(_ bathingSite: BathingSite, withNavigation: Bool) {
-        let mapItem = self.createMapItem(for: bathingSite)
+        let mapItem = MKMapItem(for: bathingSite)
         let launchOptions: [String:Any] = withNavigation ? [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDefault] : [:]
         
         mapItem.openInMaps(launchOptions: launchOptions)
@@ -36,14 +36,5 @@ final class ExternalNavigationService {
             let appStoreURL = URL(string: "https://apps.apple.com/app/id323229106")!
             UIApplication.shared.open(appStoreURL)
         }
-    }
-    
-    // MARK: - Private
-    private func createMapItem(for bathingSite: BathingSite) -> MKMapItem {
-        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: bathingSite.coordinate))
-        
-        mapItem.name = bathingSite.name
-        mapItem.pointOfInterestCategory = .beach
-        return mapItem
     }
 }
